@@ -9,32 +9,32 @@ A clean and modular Golang project for managing books using Clean Architecture p
 ```
 beta-book-api/
 ├── cmd/
-│   ├── main.go                      # Application entry point
-│   └── migrate.go                   # CLI for running migrations
+│   ├── main.go                         # Application entry point
+│   └── migrate.go                      # CLI for running migrations
 ├── config/
-│   ├── config.go                    # Loads environment variables into a config struct
-│   └── db_postgres.go              # PostgreSQL database connection initialization
+│   ├── config.go                       # Loads environment variables into a config struct
+│   └── db_postgres.go                  # PostgreSQL database connection initialization
 ├── internal/
 │   ├── delivery/
 │   │   └── http/
-│   │       └── book_handler.go      # HTTP handlers for book entity
+│   │       └── book_handler.go         # HTTP handlers for book entity
 │   ├── entity/
-│   │   └── book.go                  # Book domain model/entity
+│   │   └── book.go                     # Book domain model/entity
 │   ├── migration/
-│   │   ├── runner.go                # Core migration logic
-│   │   └── utils.go                 # Helper functions for migration (file parsing, versioning, etc.)
+│   │   ├── runner.go                   # Core migration logic
+│   │   └── utils.go                    # Helper functions for migration (file parsing, versioning, etc.)
 │   ├── repository/
-│   │   ├── book_repository.go       # Book repository interface
+│   │   ├── book_repository.go          # Book repository interface
 │   │   └── book_repository_postgres.go # PostgreSQL implementation of book repository
 │   ├── usecase/
-│   │   └── book_usecase.go          # Use cases for managing book entities
+│   │   └── book_usecase.go             # Use cases for managing book entities
 ├── migration/
-│   ├── {timestamp}_{action}_up.sql   # Timestamped UP migration scripts
-│   └── {timestamp}_{action}_down.sql # Timestamped DOWN migration scripts
-├── .env.example                     # Example environment file for setup
-├── .gitignore                       # Git ignore rules for files/folders
-├── go.mod                           # Go module configuration file
-└── README.md                        # Project documentation
+│   ├── {timestamp}_{action}_up.sql     # Timestamped UP migration scripts
+│   └── {timestamp}_{action}_down.sql   # Timestamped DOWN migration scripts
+├── .env.example                        # Example environment file for setup
+├── .gitignore                          # Git ignore rules for files/folders
+├── go.mod                              # Go module configuration file
+└── README.md                           # Project documentation
 ```
 
 ---

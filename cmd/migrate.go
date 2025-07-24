@@ -8,11 +8,11 @@ import (
 )
 
 func main() {
+	cfg := config.LoadConfig()
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: go run cmd/migrate.go [up|down]")
 	}
-
-	db := config.InitPostgresDB()
+	db := config.InitPostgresDB(cfg)
 	dir := "migration" // folder sql
 
 	switch os.Args[1] {

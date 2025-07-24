@@ -1,0 +1,58 @@
+# -----------------------------
+# Go Build & Vendor Artifacts
+# -----------------------------
+/bin/
+/build/
+/dist/
+/out/
+*.exe
+*.test
+*.out
+
+# Go Module Cache (if vendoring)
+/vendor/
+
+# Dependency directories (Go 1.11+)
+go.sum
+
+# -----------------------------
+# Environment / Configuration
+# -----------------------------
+.env
+.env.*
+!.env.example
+
+# -----------------------------
+# OS Specific
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Editor / IDEs
+# -----------------------------
+
+# VSCode
+.vscode/
+
+# JetBrains (GoLand, IntelliJ)
+.idea/
+*.iml
+
+# -----------------------------
+# Logs, Temp Files & Databases
+# -----------------------------
+*.log
+*.sqlite
+*.db
+*.pid
+*.swp
+*.tmp
+*.bak
+
+# -----------------------------
+# Test Output
+# -----------------------------
+coverage.*
+*.coverprofile
+*.testresult

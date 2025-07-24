@@ -7,11 +7,12 @@ import (
 )
 
 type APIResponse struct {
-	Status  string      `json:"status"`  // "success" or "failed"
-	Entity  string      `json:"entity"`  // e.g. "books"
-	State   string      `json:"state"`   // e.g. "getAllBooks"
-	Message string      `json:"message"` // e.g. "Success Get All Books"
-	Data    interface{} `json:"data"`    // actual payload
+	Status  string      `json:"status"`         // "success" or "failed"
+	Entity  string      `json:"entity"`         // e.g. "books"
+	State   string      `json:"state"`          // e.g. "getAllBooks"
+	Message string      `json:"message"`        // e.g. "Success Get All Books"
+	Meta    interface{} `json:"meta,omitempty"` // query metadata (search, filter, range, etc.)
+	Data    interface{} `json:"data,omitempty"` // actual payload
 }
 
 func toSafeData(data interface{}) interface{} {
@@ -22,15 +23,15 @@ func toSafeData(data interface{}) interface{} {
 	return data
 }
 
-func Success(w http.ResponseWriter, code int, entity, state, message string, data interface{}) {
-	JSON(w, code, entity, state, message, data, true)
+func Success(w http.ResponseWriter, code int, entity string, state string, message string, meta interface{}, data interface{}) {
+	JSON(w, code, entity, state, message, meta, data, true)
 }
 
-func Failed(w http.ResponseWriter, code int, entity, state, message string) {
-	JSON(w, code, entity, state, message, nil, false)
+func Failed(w http.ResponseWriter, code int, entity string, state string, message string, meta interface{}) {
+	JSON(w, code, entity, state, message, meta, nil, false)
 }
 
-func JSON(w http.ResponseWriter, code int, entity, state, message string, data interface{}, success bool) {
+func JSON(w http.ResponseWriter, code int, entity, state, message string, meta interface{}, data interface{}, success bool) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 
@@ -44,6 +45,7 @@ func JSON(w http.ResponseWriter, code int, entity, state, message string, data i
 		Entity:  entity,
 		State:   state,
 		Message: message,
+		Meta:    toSafeData(meta),
 		Data:    toSafeData(data),
 	})
 }

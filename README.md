@@ -147,18 +147,3 @@ go run cmd/main.go
 
 ---
 
-## ✅ Output Format (Standard API Response)
-
-All HTTP responses follow this structure:
-```json
-{
-  "status": "success" | "failed",
-  "entity": "books",
-  "state": "getAllBooks",
-  "message": "Success Get All Books",
-  "data": []
-}
-```
-
----
-

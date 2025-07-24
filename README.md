@@ -56,6 +56,19 @@ Concrete implementation of the repository interface using PostgreSQL and Go's `d
 ### `internal/delivery/http/`
 Implements HTTP handlers that receive requests, validate input, call use cases, and return responses.
 
+### `internal/delivery/response/api_response.go`
+Provides a consistent, reusable JSON response format for all API endpoints. The standard structure looks like this:
+```json
+{
+  "status": "SUCCESS | FAILED",
+  "entity": "books",
+  "state": "getAllBooks",
+  "message": "Success Get All Books",
+  "data": []
+}
+```
+This improves API consistency and simplifies client-side integration.
+
 ---
 
 ## ⚙️ Configuration
@@ -144,6 +157,89 @@ go run cmd/migrate.go up
 ```bash
 go run cmd/main.go
 ```
+---
+
+## ✅ Output Format (Standard API Response)
+
+All HTTP responses follow this structure:
+```json
+{
+  "status": "success" | "failed",
+  "entity": "books",
+  "state": "getAllBooks",
+  "message": "Success Get All Books",
+  "data": []
+}
+```
+## 📦 Standard API Response Format
+
+This document explains the standard JSON response structure used in the Beta Book API project, following Clean Architecture principles.
+
+## ✅ Example
+
+```json
+{
+  "status": "success" | "failed",
+  "entity": "books",
+  "state": "getAllBooks",
+  "message": "Success Get All Books",
+  "data": []
+}
+```
+
+---
+
+## 🟢 `status: "success" | "failed"`
+
+- **Description**: Represents the outcome of the HTTP request.
+- **Values**:
+    - `"success"`: The request was processed successfully (HTTP 2xx).
+    - `"failed"`: The request failed due to client or server error (HTTP 4xx/5xx).
+- **Purpose**: Allows the frontend to easily detect success or failure and handle user feedback accordingly.
+
+---
+
+## 🟠 `entity: "books"`
+
+- **Description**: Indicates the entity or resource being processed.
+- **Example Values**:
+    - `"books"` — book resource
+    - `"users"` — user resource
+- **Relation to Clean Architecture**: Refers to the domain object defined in `internal/entity/`.
+
+---
+
+## 🔵 `state: "getAllBooks"`
+
+- **Description**: Represents the use case that was executed.
+- **Example Values**:
+    - `"getAllBooks"` — fetch all books
+    - `"createBook"` — create a new book
+- **Relation to Clean Architecture**: Maps to the business logic function in `internal/usecase/`.
+
+---
+
+## 🟣 `message: "Success Get All Books"`
+
+- **Description**: Human-readable message summarizing the result.
+- **Purpose**: Shown on the client side as a notification or log.
+- **Best Practice**: Keep it short, clear, and user-friendly.
+
+---
+
+## 🟤 `data: []`
+
+- **Description**: Contains the actual result data of the request.
+- **Type**:
+    - `[]`: for list responses
+    - `{}`: for single object
+- **Special Rule**: Always return an empty array `[]` if no data exists, **never null** — this helps avoid null checks in frontend logic.
+
+---
+
+## 🧭 Summary
+
+This response format helps ensure consistency across all API endpoints, improves developer experience, and facilitates frontend-backend integration.
 
 ---
 

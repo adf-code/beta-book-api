@@ -1,6 +1,7 @@
 package http
 
 import (
+	"beta-book-api/internal/delivery/response"
 	"beta-book-api/internal/entity"
 	"beta-book-api/internal/repository"
 	"encoding/json"
@@ -37,59 +38,59 @@ func (h *BookHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (h *BookHandler) getAll(w http.ResponseWriter, r *http.Request) {
 	books, err := h.Repo.FetchAll()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		response.Failed(w, 500, "books", "getAllBooks", "Error Get All Books")
 		return
 	}
-	json.NewEncoder(w).Encode(books)
+	response.Success(w, 200, "books", "getAllBooks", "Success Get All Books", books)
 }
 
 func (h *BookHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	idStr := strings.TrimPrefix(r.URL.Path, "/books/")
 	if idStr == "" {
-		http.Error(w, "Missing id parameter", http.StatusBadRequest)
+		response.Failed(w, 422, "books", "getBookByID", "Missing ID Parameter, Get Book by ID")
 		return
 	}
 	id, err := uuid.Parse(idStr)
 	if err != nil {
-		http.Error(w, "Invalid UUID format", http.StatusBadRequest)
+		response.Failed(w, 422, "books", "getBookByID", "Invalid UUID, Get Book by ID")
 		return
 	}
 	book, err := h.Repo.FetchByID(id)
 	if err != nil {
-		http.Error(w, "Book not found", http.StatusNotFound)
+		response.Failed(w, 500, "books", "getBookByID", "Error Get Book by ID")
 		return
 	}
-	json.NewEncoder(w).Encode(book)
+	response.Success(w, 200, "books", "getBookByID", "Success Get Book by ID", book)
 }
 
 func (h *BookHandler) create(w http.ResponseWriter, r *http.Request) {
 	var book entity.Book
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
-		http.Error(w, "Invalid input", http.StatusBadRequest)
+		response.Failed(w, 422, "books", "createBook", "Invalid Data, Create Book")
 		return
 	}
 
 	if err := h.Repo.Store(&book); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		response.Failed(w, 500, "books", "createBook", "Error Create Book")
 		return
 	}
-	json.NewEncoder(w).Encode(book)
+	response.Success(w, 201, "books", "createBook", "Success Create Book", book)
 }
 
 func (h *BookHandler) delete(w http.ResponseWriter, r *http.Request) {
 	idStr := strings.TrimPrefix(r.URL.Path, "/books/")
 	if idStr == "" {
-		http.Error(w, "Missing id parameter", http.StatusBadRequest)
+		response.Failed(w, 422, "books", "deleteBookByID", "Missing ID Parameter, Delete Book by ID")
 		return
 	}
 	id, err := uuid.Parse(idStr)
 	if err != nil {
-		http.Error(w, "Invalid UUID format", http.StatusBadRequest)
+		response.Failed(w, 422, "books", "deleteBookByID", "Invalid UUID, Delete Book by ID")
 		return
 	}
 	if err := h.Repo.Remove(id); err != nil {
-		http.Error(w, "Failed to delete", http.StatusInternalServerError)
+		response.Failed(w, 500, "books", "deleteBookByID", "Error Delete Book")
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+	response.Success(w, 202, "books", "deleteBookByID", "Success Delete Book", nil)
 }

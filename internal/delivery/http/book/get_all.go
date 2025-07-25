@@ -3,7 +3,6 @@ package book
 import (
 	"beta-book-api/internal/delivery/request"
 	"beta-book-api/internal/delivery/response"
-	"log"
 	"net/http"
 )
 
@@ -32,7 +31,6 @@ func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	params := request.ParseBookQueryParams(r)
 	books, err := h.Repo.FetchWithQueryParams(params)
 	if err != nil {
-		log.Println(err)
 		response.FailedWithMeta(w, 500, "books", "getAllBooks", "Error Get All Books", nil)
 		return
 	}

@@ -28,24 +28,11 @@ func ParseBookQueryParams(r *http.Request) BookListQueryParams {
 	// Range
 	var ranges []QueryRange
 	rangeFields := q["range_field"]
-	mins := q["min"]
-	maxs := q["max"]
 	froms := q["from"]
 	tos := q["to"]
 
 	for i := 0; i < len(rangeFields); i++ {
 		rng := QueryRange{Field: rangeFields[i]}
-
-		if i < len(mins) {
-			if min, err := strconv.Atoi(mins[i]); err == nil {
-				rng.Min = &min
-			}
-		}
-		if i < len(maxs) {
-			if max, err := strconv.Atoi(maxs[i]); err == nil {
-				rng.Max = &max
-			}
-		}
 		if i < len(froms) {
 			rng.From = &froms[i]
 		}

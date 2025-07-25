@@ -1,0 +1,103 @@
+basePath: /api/v1
+definitions:
+  response.APIResponse:
+    properties:
+      data:
+        description: actual payload
+      entity:
+        description: e.g. "books"
+        type: string
+      message:
+        description: e.g. "Success Get All Books"
+        type: string
+      state:
+        description: e.g. "getAllBooks"
+        type: string
+      status:
+        description: '"success" or "failed"'
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: ADF Code
+    url: https://github.com/adf-code
+  description: API service to manage books using Clean Architecture
+  title: Beta Book API
+  version: "1.0"
+paths:
+  /api/v1/books:
+    get:
+      consumes:
+      - application/json
+      description: List all books with filter, search, pagination
+      parameters:
+      - description: Search field (e.g., title)
+        in: query
+        name: search_field
+        type: string
+      - description: Search value (e.g., golang)
+        in: query
+        name: search_value
+        type: string
+      - collectionFormat: csv
+        description: Filter by author
+        in: query
+        items:
+          type: string
+        name: filter_author[]
+        type: array
+      - collectionFormat: csv
+        description: Filter by title
+        in: query
+        items:
+          type: string
+        name: filter_title[]
+        type: array
+      - description: Min year
+        in: query
+        name: range_year_min
+        type: integer
+      - description: Max year
+        in: query
+        name: range_year_max
+        type: integer
+      - description: Start date (RFC3339)
+        in: query
+        name: range_created_from
+        type: string
+      - description: End date (RFC3339)
+        in: query
+        name: range_created_to
+        type: string
+      - description: Sort field
+        in: query
+        name: sort_field
+        type: string
+      - description: Sort direction ASC/DESC
+        in: query
+        name: sort_direction
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Limit per page
+        in: query
+        name: per_page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      summary: Get list of books
+      tags:
+      - books
+swagger: "2.0"

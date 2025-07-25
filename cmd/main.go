@@ -1,8 +1,18 @@
+// @title           Beta Book API
+// @version         1.0
+// @description     API service to manage books using Clean Architecture
+
+// @contact.name   ADF Code
+// @contact.url    https://github.com/adf-code
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+
 package main
 
 import (
 	"beta-book-api/config"
-	api "beta-book-api/internal/delivery/http"
+	deliveryHttp "beta-book-api/internal/delivery/http"
 	"beta-book-api/internal/repository"
 	"fmt"
 	"log"
@@ -13,7 +23,7 @@ func main() {
 	cfg := config.LoadConfig()
 	db := config.InitPostgresDB(cfg)
 	repo := repository.NewBookRepo(db)
-	handler := api.NewBookHandler(repo)
+	handler := deliveryHttp.SetupHandler(repo)
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
 	log.Println("🟢 Server started on :8080 | Press Ctrl+C to stop")

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
+	"log"
 )
 
 type bookRepo struct {
@@ -56,27 +57,37 @@ func (r *bookRepo) FetchWithQueryParams(params request.BookListQueryParams) ([]e
 		}
 	}
 
-	// Ranges
+	// Range Year
 	for _, r := range params.Range {
-		if r.Min != nil {
-			query += fmt.Sprintf(" AND %s >= $%d", r.Field, argIndex)
-			args = append(args, *r.Min)
-			argIndex++
+		log.Println(r.Field)
+		if r.Field == "year" {
+			if r.Min != nil {
+				query += fmt.Sprintf(" AND %s >= $%d", r.Field, argIndex)
+				args = append(args, *r.Min)
+				argIndex++
+			}
+			if r.Max != nil {
+				query += fmt.Sprintf(" AND %s <= $%d", r.Field, argIndex)
+				args = append(args, *r.Max)
+				argIndex++
+			}
 		}
-		if r.Max != nil {
-			query += fmt.Sprintf(" AND %s <= $%d", r.Field, argIndex)
-			args = append(args, *r.Max)
-			argIndex++
-		}
-		if r.From != nil {
-			query += fmt.Sprintf(" AND %s >= $%d", r.Field, argIndex)
-			args = append(args, *r.From)
-			argIndex++
-		}
-		if r.To != nil {
-			query += fmt.Sprintf(" AND %s <= $%d", r.Field, argIndex)
-			args = append(args, *r.To)
-			argIndex++
+	}
+
+	// Range Created at
+	for _, r := range params.Range {
+		log.Println(r.Field)
+		if r.Field == "created_at" {
+			if r.From != nil {
+				query += fmt.Sprintf(" AND %s >= $%d", r.Field, argIndex)
+				args = append(args, *r.From)
+				argIndex++
+			}
+			if r.To != nil {
+				query += fmt.Sprintf(" AND %s <= $%d", r.Field, argIndex)
+				args = append(args, *r.To)
+				argIndex++
+			}
 		}
 	}
 
@@ -91,7 +102,8 @@ func (r *bookRepo) FetchWithQueryParams(params request.BookListQueryParams) ([]e
 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argIndex, argIndex+1)
 		args = append(args, params.PerPage, offset)
 	}
-
+	log.Println(args...)
+	log.Println(query)
 	rows, err := r.DB.Query(query, args...)
 	if err != nil {
 		return nil, err

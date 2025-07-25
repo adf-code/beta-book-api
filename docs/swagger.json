@@ -1,0 +1,153 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API service to manage books using Clean Architecture",
+        "title": "Beta Book API",
+        "contact": {
+            "name": "ADF Code",
+            "url": "https://github.com/adf-code"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/api/v1/books": {
+            "get": {
+                "description": "List all books with filter, search, pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "books"
+                ],
+                "summary": "Get list of books",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search field (e.g., title)",
+                        "name": "search_field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search value (e.g., golang)",
+                        "name": "search_value",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Filter by author",
+                        "name": "filter_author[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Filter by title",
+                        "name": "filter_title[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Min year",
+                        "name": "range_year_min",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Max year",
+                        "name": "range_year_max",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date (RFC3339)",
+                        "name": "range_created_from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (RFC3339)",
+                        "name": "range_created_to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field",
+                        "name": "sort_field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort direction ASC/DESC",
+                        "name": "sort_direction",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit per page",
+                        "name": "per_page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "response.APIResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "actual payload"
+                },
+                "entity": {
+                    "description": "e.g. \"books\"",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "e.g. \"Success Get All Books\"",
+                    "type": "string"
+                },
+                "state": {
+                    "description": "e.g. \"getAllBooks\"",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "\"success\" or \"failed\"",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

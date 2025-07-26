@@ -8,7 +8,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
+	"github.com/joho/godotenv"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -17,6 +19,9 @@ import (
 )
 
 func main() {
+	_ = godotenv.Load() // Load .env
+	telemetryLog := logger.InitLoggerWithTelemetry()
+
 	// Load env config
 	cfg := config.LoadConfig()
 
@@ -29,9 +34,9 @@ func main() {
 
 	// ✅ Ping to test DB connection
 	if err := db.Ping(); err != nil {
-		log.Fatalf("❌ Failed to connect to PostgreSQL: %v", err)
+		telemetryLog.Fatal().Err(err).Msgf("❌ Failed to connect to PostgreSQL: %v", err)
 	} else {
-		log.Println("✅ Connected to PostgreSQL successfully")
+		telemetryLog.Info().Msgf("✅ Connected to PostgreSQL successfully")
 	}
 
 	// Repository and HTTP handler
@@ -46,9 +51,10 @@ func main() {
 
 	// Run server in goroutine
 	go func() {
-		log.Printf("🟢 Server running on http://localhost:%s", cfg.Port)
+		telemetryLog.Info().Msgf("🟢 Server running on http://localhost:%s", cfg.Port)
+		telemetryLog.Info().Msgf("📚 Swagger running on http://localhost:%s/swagger/index.html", cfg.Port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("❌ Server failed: %v", err)
+			log.Fatal().Err(err).Msgf("❌ Server failed: %v", err)
 		}
 	}()
 
@@ -57,7 +63,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("🛑 Gracefully shutting down server...")
+	telemetryLog.Info().Msgf("🛑 Gracefully shutting down server...")
 
 	// Graceful shutdown context
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -65,19 +71,19 @@ func main() {
 
 	// Shutdown HTTP server
 	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("❌ Server shutdown failed: %v", err)
+		telemetryLog.Fatal().Err(err).Msgf("❌ Server shutdown failed: %v", err)
 	}
 
 	// ✅ Close PostgreSQL DB
-	closePostgres(db)
+	closePostgres(db, telemetryLog)
 
-	log.Println("✅ Server shutdown completed.")
+	telemetryLog.Info().Msgf("✅ Server shutdown completed.")
 }
 
-func closePostgres(db *sql.DB) {
+func closePostgres(db *sql.DB, telemetryLog zerolog.Logger) {
 	if err := db.Close(); err != nil {
-		log.Printf("⚠️ Failed to close PostgreSQL connection: %v", err)
+		telemetryLog.Info().Msgf("⚠️ Failed to close PostgreSQL connection: %v", err)
 	} else {
-		log.Println("🔒 PostgreSQL connection closed.")
+		telemetryLog.Info().Msgf("🔒 PostgreSQL connection closed.")
 	}
 }

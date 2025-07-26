@@ -7,7 +7,6 @@ import (
 )
 
 type BookRepository interface {
-	FetchAll() ([]entity.Book, error)
 	FetchWithQueryParams(params request.BookListQueryParams) ([]entity.Book, error)
 	FetchByID(id uuid.UUID) (*entity.Book, error)
 	Store(book *entity.Book) error

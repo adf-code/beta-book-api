@@ -3,7 +3,9 @@ package http
 import (
 	"beta-book-api/internal/delivery/http/book"
 	"beta-book-api/internal/delivery/http/middleware"
+	"beta-book-api/internal/pkg/logger"
 	"beta-book-api/internal/repository"
+	"beta-book-api/internal/usecase"
 	"github.com/swaggo/http-swagger"
 	"net/http"
 	"strings"
@@ -12,7 +14,10 @@ import (
 )
 
 func SetupHandler(repo repository.BookRepository) http.Handler {
-	bookHandler := book.NewBookHandler(repo)
+	telemetryLog := logger.InitLoggerWithTelemetry()
+
+	bookUC := usecase.NewBookUseCase(repo)
+	bookHandler := book.NewBookHandler(bookUC, telemetryLog)
 	auth := middleware.AuthMiddleware
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

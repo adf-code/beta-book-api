@@ -14,6 +14,7 @@ type AppConfig struct {
 	DBPassword string
 	DBName     string
 	DBSSLMode  string
+	Env        string
 }
 
 func LoadConfig() *AppConfig {
@@ -23,6 +24,7 @@ func LoadConfig() *AppConfig {
 	}
 
 	return &AppConfig{
+		Env:        getEnv("ENV", "development"),
 		Port:       getEnv("APP_PORT", "8080"),
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),

@@ -3,6 +3,7 @@ package main
 import (
 	"beta-book-api/config"
 	deliveryHttp "beta-book-api/internal/delivery/http"
+	"beta-book-api/internal/pkg/logger"
 	"beta-book-api/internal/repository"
 	"context"
 	"database/sql"
@@ -18,6 +19,10 @@ import (
 func main() {
 	// Load env config
 	cfg := config.LoadConfig()
+
+	logger.InitLogger(cfg.Env)
+	customLog := logger.Log
+	customLog.Info().Msg("Starting Beta Book API...")
 
 	// Init DB
 	db := config.InitPostgresDB(cfg)

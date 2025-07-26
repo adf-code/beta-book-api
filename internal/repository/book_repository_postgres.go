@@ -56,18 +56,8 @@ func (r *bookRepo) FetchWithQueryParams(params request.BookListQueryParams) ([]e
 		}
 	}
 
-	// Ranges
+	// Range
 	for _, r := range params.Range {
-		if r.Min != nil {
-			query += fmt.Sprintf(" AND %s >= $%d", r.Field, argIndex)
-			args = append(args, *r.Min)
-			argIndex++
-		}
-		if r.Max != nil {
-			query += fmt.Sprintf(" AND %s <= $%d", r.Field, argIndex)
-			args = append(args, *r.Max)
-			argIndex++
-		}
 		if r.From != nil {
 			query += fmt.Sprintf(" AND %s >= $%d", r.Field, argIndex)
 			args = append(args, *r.From)
@@ -91,7 +81,6 @@ func (r *bookRepo) FetchWithQueryParams(params request.BookListQueryParams) ([]e
 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argIndex, argIndex+1)
 		args = append(args, params.PerPage, offset)
 	}
-
 	rows, err := r.DB.Query(query, args...)
 	if err != nil {
 		return nil, err

@@ -7,8 +7,6 @@ type QueryFilter struct {
 
 type QueryRange struct {
 	Field string  `json:"field"`
-	Min   *int    `json:"min"`
-	Max   *int    `json:"max"`
 	From  *string `json:"from"`
 	To    *string `json:"to"`
 }

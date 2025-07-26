@@ -1,0 +1,226 @@
+definitions:
+  entity.Book:
+    properties:
+      author:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      year:
+        type: integer
+    type: object
+  response.APIResponse:
+    properties:
+      data:
+        description: actual payload
+      entity:
+        description: e.g. "books"
+        type: string
+      message:
+        description: e.g. "Success Get All Books"
+        type: string
+      state:
+        description: e.g. "getAllBooks"
+        type: string
+      status:
+        description: '"success" or "failed"'
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: List all books with filter, search, pagination
+      parameters:
+      - description: Search field (e.g., title)
+        in: query
+        name: search_field
+        type: string
+      - description: Search value (e.g., golang)
+        in: query
+        name: search_value
+        type: string
+      - collectionFormat: multi
+        description: Filter field
+        in: query
+        items:
+          type: string
+        name: filter_field
+        type: array
+      - collectionFormat: multi
+        description: Filter value
+        in: query
+        items:
+          type: string
+        name: filter_value
+        type: array
+      - collectionFormat: multi
+        description: Range field
+        in: query
+        items:
+          type: string
+        name: range_field
+        type: array
+      - collectionFormat: multi
+        description: Range lower bound
+        in: query
+        items:
+          type: string
+        name: from
+        type: array
+      - collectionFormat: multi
+        description: Range upper bound
+        in: query
+        items:
+          type: string
+        name: to
+        type: array
+      - description: Sort field
+        in: query
+        name: sort_field
+        type: string
+      - description: Sort direction ASC/DESC
+        in: query
+        name: sort_direction
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Limit per page
+        in: query
+        name: per_page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get list of books
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: Creates a new book with the provided title, author, and year
+      parameters:
+      - description: Book data to create
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Book'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new book
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      description: Deletes a book entity using its UUID
+      parameters:
+      - description: UUID of the book to delete
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Invalid UUID
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "404":
+          description: Book not found
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a book by ID
+      tags:
+      - books
+    get:
+      description: Retrieve a book entity using its UUID
+      parameters:
+      - description: UUID of the book
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Invalid UUID
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "404":
+          description: Book not found
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get book by ID
+      tags:
+      - books
+swagger: "2.0"

@@ -22,7 +22,7 @@ import (
 // @Failure      500  {object}  response.APIResponse  "Internal server error"
 // @Router       /books/{id} [get]
 func (h *BookHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/books/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/v1/books/")
 	if idStr == "" {
 		response.Failed(w, 422, "books", "getBookByID", "Missing ID Parameter, Get Book by ID")
 		return
@@ -32,7 +32,7 @@ func (h *BookHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		response.Failed(w, 422, "books", "getBookByID", "Invalid UUID, Get Book by ID")
 		return
 	}
-	book, err := h.Repo.FetchByID(id)
+	book, err := h.UseCase.GetByID(id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			response.Success(w, 404, "books", "getBookByID", "Book not Found", nil)

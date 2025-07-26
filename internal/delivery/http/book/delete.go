@@ -20,7 +20,7 @@ import (
 // @Failure      500  {object}  response.APIResponse  "Internal server error"
 // @Router       /books/{id} [delete]
 func (h *BookHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/books/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/v1/books/")
 	if idStr == "" {
 		response.Failed(w, 422, "books", "deleteBookByID", "Missing ID Parameter, Delete Book by ID")
 		return
@@ -30,7 +30,7 @@ func (h *BookHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		response.Failed(w, 422, "books", "deleteBookByID", "Invalid UUID, Delete Book by ID")
 		return
 	}
-	if err := h.Repo.Remove(id); err != nil {
+	if err := h.UseCase.Delete(id); err != nil {
 		response.Failed(w, 500, "books", "deleteBookByID", "Error Delete Book")
 		return
 	}

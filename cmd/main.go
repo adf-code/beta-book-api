@@ -42,6 +42,7 @@ func main() {
 	// Run server in goroutine
 	go func() {
 		log.Printf("🟢 Server running on http://localhost:%s", cfg.Port)
+		log.Printf("📚 Swagger running on http://localhost:%s/swagger/index.html", cfg.Port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("❌ Server failed: %v", err)
 		}

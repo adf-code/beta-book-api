@@ -9,6 +9,18 @@ import (
 	"strings"
 )
 
+// GetBookByID godoc
+// @Summary      Get book by ID
+// @Description  Retrieve a book entity using its UUID
+// @Tags         books
+// @Security     BearerAuth
+// @Param        id   path      string  true  "UUID of the book"
+// @Success      200  {object}  response.APIResponse
+// @Failure      400  {object}  response.APIResponse  "Invalid UUID"
+// @Failure      401  {object}  response.APIResponse  "Unauthorized"
+// @Failure      404  {object}  response.APIResponse  "Book not found"
+// @Failure      500  {object}  response.APIResponse  "Internal server error"
+// @Router       /books/{id} [get]
 func (h *BookHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	idStr := strings.TrimPrefix(r.URL.Path, "/books/")
 	if idStr == "" {

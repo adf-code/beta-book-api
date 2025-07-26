@@ -1,5 +1,20 @@
 basePath: /api/v1
 definitions:
+  entity.Book:
+    properties:
+      author:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      year:
+        type: integer
+    type: object
   response.APIResponse:
     properties:
       data:
@@ -40,19 +55,19 @@ paths:
         in: query
         name: search_value
         type: string
-      - collectionFormat: csv
-        description: Filter by author
+      - collectionFormat: multi
+        description: Filter field
         in: query
         items:
           type: string
-        name: filter_author[]
+        name: filter_field
         type: array
-      - collectionFormat: csv
-        description: Filter by title
+      - collectionFormat: multi
+        description: Filter value
         in: query
         items:
           type: string
-        name: filter_title[]
+        name: filter_value
         type: array
       - collectionFormat: multi
         description: Range field
@@ -105,6 +120,114 @@ paths:
       security:
       - BearerAuth: []
       summary: Get list of books
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: Creates a new book with the provided title, author, and year
+      parameters:
+      - description: Book data to create
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Book'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new book
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      description: Deletes a book entity using its UUID
+      parameters:
+      - description: UUID of the book to delete
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Invalid UUID
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "404":
+          description: Book not found
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a book by ID
+      tags:
+      - books
+    get:
+      description: Retrieve a book entity using its UUID
+      parameters:
+      - description: UUID of the book
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Invalid UUID
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "404":
+          description: Book not found
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get book by ID
       tags:
       - books
 securityDefinitions:

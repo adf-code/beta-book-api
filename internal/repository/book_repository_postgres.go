@@ -17,24 +17,6 @@ func NewBookRepo(db *sql.DB) BookRepository {
 	return &bookRepo{DB: db}
 }
 
-func (r *bookRepo) FetchAll() ([]entity.Book, error) {
-	rows, err := r.DB.Query("SELECT id, title, author, year FROM books")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var books []entity.Book
-	for rows.Next() {
-		var b entity.Book
-		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Year); err != nil {
-			return nil, err
-		}
-		books = append(books, b)
-	}
-	return books, nil
-}
-
 func (r *bookRepo) FetchWithQueryParams(params request.BookListQueryParams) ([]entity.Book, error) {
 	query := "SELECT id, title, author, year, created_at, updated_at FROM books WHERE 1=1"
 	args := []interface{}{}

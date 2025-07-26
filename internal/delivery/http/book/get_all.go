@@ -39,7 +39,7 @@ import (
 // @Router       /books [get]
 func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	params := request.ParseBookQueryParams(r)
-	books, err := h.Repo.FetchWithQueryParams(params)
+	books, err := h.UseCase.GetAll(params)
 	if err != nil {
 		response.FailedWithMeta(w, 500, "books", "getAllBooks", "Error Get All Books", nil)
 		return

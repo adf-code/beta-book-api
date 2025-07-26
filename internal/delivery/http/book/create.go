@@ -28,9 +28,10 @@ func (h *BookHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.Repo.Store(&book); err != nil {
+	newBook, err := h.UseCase.Create(book)
+	if err != nil {
 		response.Failed(w, 500, "books", "createBook", "Error Create Book")
 		return
 	}
-	response.Success(w, 201, "books", "createBook", "Success Create Book", book)
+	response.Success(w, 201, "books", "createBook", "Success Create Book", newBook)
 }

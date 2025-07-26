@@ -1,16 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API service to manage books using Clean Architecture",
-        "title": "Beta Book API",
-        "contact": {
-            "name": "ADF Code",
-            "url": "https://github.com/adf-code"
-        },
-        "version": "1.0"
+        "contact": {}
     },
-    "host": "localhost:8080",
-    "basePath": "/api/v1",
     "paths": {
         "/books": {
             "get": {
@@ -351,14 +343,6 @@
                     "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "BearerAuth": {
-            "description": "Using token header using the Bearer scheme. Example: \"Bearer {token}\"",
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }

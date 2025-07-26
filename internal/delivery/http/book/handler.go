@@ -1,13 +1,13 @@
 package book
 
 import (
-	"beta-book-api/internal/repository"
+	"beta-book-api/internal/usecase"
 )
 
 type BookHandler struct {
-	Repo repository.BookRepository
+	UseCase usecase.BookUseCase
 }
 
-func NewBookHandler(repo repository.BookRepository) *BookHandler {
-	return &BookHandler{Repo: repo}
+func NewBookHandler(uc usecase.BookUseCase) *BookHandler {
+	return &BookHandler{UseCase: uc}
 }

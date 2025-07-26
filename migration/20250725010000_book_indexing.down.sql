@@ -1,0 +1,4 @@
+DROP INDEX idx_books_title
+DROP INDEX idx_books_author
+DROP INDEX idx_books_year
+DROP INDEX idx_books_created_at

@@ -8,6 +8,11 @@
 // @host      localhost:8080
 // @BasePath  /api/v1
 
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Using token header using the Bearer scheme. Example: "Bearer {token}"
+
 package main
 
 import (

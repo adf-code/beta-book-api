@@ -18,8 +18,13 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/books": {
+        "/books": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "List all books with filter, search, pagination",
                 "consumes": [
                     "application/json"
@@ -65,27 +70,33 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "description": "Min year",
-                        "name": "range_year_min",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Range field",
+                        "name": "range_field",
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "description": "Max year",
-                        "name": "range_year_max",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Range lower bound",
+                        "name": "from",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "Start date (RFC3339)",
-                        "name": "range_created_from",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "End date (RFC3339)",
-                        "name": "range_created_to",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Range upper bound",
+                        "name": "to",
                         "in": "query"
                     },
                     {
@@ -154,6 +165,14 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Using token header using the Bearer scheme. Example: \"Bearer {token}\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

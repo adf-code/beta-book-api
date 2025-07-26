@@ -2,6 +2,7 @@ package http
 
 import (
 	"beta-book-api/internal/delivery/http/book"
+	"beta-book-api/internal/delivery/http/middleware"
 	"beta-book-api/internal/repository"
 	"github.com/swaggo/http-swagger"
 	"net/http"
@@ -12,33 +13,40 @@ import (
 
 func SetupHandler(repo repository.BookRepository) http.Handler {
 	bookHandler := book.NewBookHandler(repo)
+	auth := middleware.AuthMiddleware
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
 		method := r.Method
 
-		switch {
-		// ✅ Swagger docs
-		case strings.HasPrefix(path, "/swagger/"):
+		// ✅ Swagger
+		if strings.HasPrefix(path, "/swagger/") {
 			httpSwagger.WrapHandler(w, r)
+			return
+		}
 
-		// ✅ Get all books
-		case path == "/books" && method == http.MethodGet:
-			bookHandler.GetAll(w, r)
+		// ✅ All API prefixed with /api/v1
+		if !strings.HasPrefix(path, "/api/v1") {
+			http.NotFound(w, r)
+			return
+		}
 
-		// ✅ Get book by ID
-		case strings.HasPrefix(path, "/books/") && method == http.MethodGet:
-			bookHandler.GetByID(w, r)
+		// Remove prefix for routing logic
+		apiPath := strings.TrimPrefix(path, "/api/v1")
 
-		// ✅ Create book
-		case path == "/books" && method == http.MethodPost:
-			bookHandler.Create(w, r)
+		switch {
+		case apiPath == "/books" && method == http.MethodGet:
+			auth(bookHandler.GetAll)(w, r)
 
-		// ✅ Delete book
-		case strings.HasPrefix(path, "/books/") && method == http.MethodDelete:
-			bookHandler.Delete(w, r)
+		case strings.HasPrefix(apiPath, "/books/") && method == http.MethodGet:
+			auth(bookHandler.GetByID)(w, r)
 
-		// ✅ Not found
+		case apiPath == "/books" && method == http.MethodPost:
+			auth(bookHandler.Create)(w, r)
+
+		case strings.HasPrefix(apiPath, "/books/") && method == http.MethodDelete:
+			auth(bookHandler.Delete)(w, r)
+
 		default:
 			http.NotFound(w, r)
 		}

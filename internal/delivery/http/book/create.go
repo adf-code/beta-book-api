@@ -4,6 +4,7 @@ import (
 	"beta-book-api/internal/delivery/response"
 	"beta-book-api/internal/entity"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -22,16 +23,20 @@ import (
 // @Failure      500      {object}  response.APIResponse
 // @Router       /books [post]
 func (h *BookHandler) Create(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info().Msg("📥 Incoming Create request")
 	var book entity.Book
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
+		h.Logger.Error().Err(err).Msg("❌ Failed to store book, invalid data")
 		response.Failed(w, 422, "books", "createBook", "Invalid Data, Create Book")
 		return
 	}
 
 	newBook, err := h.UseCase.Create(book)
 	if err != nil {
+		h.Logger.Error().Err(err).Msg("❌ Failed to store book, general")
 		response.Failed(w, 500, "books", "createBook", "Error Create Book")
 		return
 	}
+	h.Logger.Info().Str("data", fmt.Sprint(newBook)).Msg("✅ Successfully stored book")
 	response.Success(w, 201, "books", "createBook", "Success Create Book", newBook)
 }

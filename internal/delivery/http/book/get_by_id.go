@@ -4,6 +4,7 @@ import (
 	"beta-book-api/internal/delivery/response"
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/google/uuid"
 	"net/http"
 	"strings"
@@ -22,24 +23,30 @@ import (
 // @Failure      500  {object}  response.APIResponse  "Internal server error"
 // @Router       /books/{id} [get]
 func (h *BookHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info().Msg("📥 Incoming GetByID request")
 	idStr := strings.TrimPrefix(r.URL.Path, "/api/v1/books/")
 	if idStr == "" {
+		h.Logger.Error().Msg("❌ Failed to get book by ID, missing ID parameter")
 		response.Failed(w, 422, "books", "getBookByID", "Missing ID Parameter, Get Book by ID")
 		return
 	}
 	id, err := uuid.Parse(idStr)
 	if err != nil {
+		h.Logger.Error().Err(err).Msg("❌ Failed to get book by ID, invalid UUID parameter")
 		response.Failed(w, 422, "books", "getBookByID", "Invalid UUID, Get Book by ID")
 		return
 	}
 	book, err := h.UseCase.GetByID(id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
+			h.Logger.Info().Msg("✅ Successfully get book by id, data not found")
 			response.Success(w, 404, "books", "getBookByID", "Book not Found", nil)
 			return
 		}
+		h.Logger.Error().Err(err).Msg("❌ Failed to get book by ID, general")
 		response.Failed(w, 500, "books", "getBookByID", "Error Get Book by ID")
 		return
 	}
+	h.Logger.Info().Str("data", fmt.Sprint(book)).Msg("✅ Successfully get book by id")
 	response.Success(w, 200, "books", "getBookByID", "Success Get Book by ID", book)
 }

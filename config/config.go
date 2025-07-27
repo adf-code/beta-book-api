@@ -7,13 +7,16 @@ import (
 )
 
 type AppConfig struct {
-	Port       string
-	DBHost     string
-	DBPort     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBSSLMode  string
+	Port              string
+	DBHost            string
+	DBPort            string
+	DBUser            string
+	DBPassword        string
+	DBName            string
+	DBSSLMode         string
+	Env               string
+	TelemetryAPIKey   string
+	TelemetryEndpoint string
 }
 
 func LoadConfig() *AppConfig {
@@ -23,13 +26,16 @@ func LoadConfig() *AppConfig {
 	}
 
 	return &AppConfig{
-		Port:       getEnv("APP_PORT", "8080"),
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     getEnv("DB_PORT", "5432"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", ""),
-		DBName:     getEnv("DB_NAME", "bookdb"),
-		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
+		Env:               getEnv("ENV", "development"),
+		Port:              getEnv("APP_PORT", "8080"),
+		DBHost:            getEnv("DB_HOST", "localhost"),
+		DBPort:            getEnv("DB_PORT", "5432"),
+		DBUser:            getEnv("DB_USER", "postgres"),
+		DBPassword:        getEnv("DB_PASSWORD", ""),
+		DBName:            getEnv("DB_NAME", "bookdb"),
+		DBSSLMode:         getEnv("DB_SSLMODE", "disable"),
+		TelemetryAPIKey:   getEnv("TELEMETRY_API_KEY", "not_set"),
+		TelemetryEndpoint: getEnv("TELEMETRY_ENDPOINT", "not_set"),
 	}
 }
 

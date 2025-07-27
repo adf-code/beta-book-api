@@ -38,11 +38,14 @@ import (
 // @Failure      500     {object}  response.APIResponse
 // @Router       /books [get]
 func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info().Msg("📥 Incoming GetAll request")
 	params := request.ParseBookQueryParams(r)
 	books, err := h.UseCase.GetAll(params)
 	if err != nil {
+		h.Logger.Error().Err(err).Msg("❌ Failed to fetch books, general")
 		response.FailedWithMeta(w, 500, "books", "getAllBooks", "Error Get All Books", nil)
 		return
 	}
+	h.Logger.Info().Int("count", len(books)).Msg("✅ Successfully fetched books")
 	response.SuccessWithMeta(w, 200, "books", "getAllBooks", "Success Get All Books", &params, books)
 }

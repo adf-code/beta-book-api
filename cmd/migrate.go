@@ -3,6 +3,7 @@ package main
 import (
 	"beta-book-api/config"
 	"beta-book-api/internal/migration"
+	"beta-book-api/internal/pkg/database"
 	"log"
 	"os"
 )
@@ -12,7 +13,7 @@ func main() {
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: go run cmd/migrate.go [up|down]")
 	}
-	db := config.InitPostgresDB(cfg)
+	db := database.InitPostgresDB(cfg)
 	dir := "migration" // folder sql
 
 	switch os.Args[1] {

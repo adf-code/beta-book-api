@@ -37,6 +37,12 @@ func (h *BookHandler) Create(w http.ResponseWriter, r *http.Request) {
 		response.Failed(w, 500, "books", "createBook", "Error Create Book")
 		return
 	}
+	err = h.EmailClient.SendEmail("arief.dfaltah@gmail.com", fmt.Sprintf("Book Created - %s", book.Title), "Book created", "<strong>Book Created</strong>")
+	if err != nil {
+		h.Logger.Error().Err(err).Msg("❌ Failed to store book, send email")
+		response.Failed(w, 500, "books", "createBook", "Error Create Book")
+		return
+	}
 	h.Logger.Info().Str("data", fmt.Sprint(newBook)).Msg("✅ Successfully stored book")
 	response.Success(w, 201, "books", "createBook", "Success Create Book", newBook)
 }

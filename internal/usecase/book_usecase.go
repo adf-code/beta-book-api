@@ -3,9 +3,9 @@ package usecase
 import (
 	"beta-book-api/internal/delivery/request"
 	"beta-book-api/internal/entity"
-	"beta-book-api/internal/pkg/logger"
 	"beta-book-api/internal/repository"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog"
 )
 
 type BookUseCase interface {
@@ -16,25 +16,29 @@ type BookUseCase interface {
 }
 
 type bookUseCase struct {
-	repo repository.BookRepository
+	repo   repository.BookRepository
+	logger zerolog.Logger
 }
 
-func NewBookUseCase(repo repository.BookRepository) BookUseCase {
-	return &bookUseCase{repo: repo}
+func NewBookUseCase(repo repository.BookRepository, logger zerolog.Logger) BookUseCase {
+	return &bookUseCase{
+		repo:   repo,
+		logger: logger,
+	}
 }
 
 func (uc *bookUseCase) GetAll(params request.BookListQueryParams) ([]entity.Book, error) {
-	logger.Log.Info().Str("usecase", "GetAll").Msg("Fetching books")
+	uc.logger.Info().Str("usecase", "GetAll").Msg("⚙️ Fetching all books")
 	return uc.repo.FetchWithQueryParams(params)
 }
 
 func (uc *bookUseCase) GetByID(id uuid.UUID) (*entity.Book, error) {
-	logger.Log.Info().Str("usecase", "GetByID").Msg("Fetching book by ID")
+	uc.logger.Info().Str("usecase", "GetByID").Msg("⚙️ Fetching book by ID")
 	return uc.repo.FetchByID(id)
 }
 
 func (uc *bookUseCase) Create(book entity.Book) (*entity.Book, error) {
-	logger.Log.Info().Str("usecase", "Create").Msg("Store book")
+	uc.logger.Info().Str("usecase", "Create").Msg("⚙️ Store book")
 	err := uc.repo.Store(&book)
 	if err != nil {
 		return nil, err
@@ -43,6 +47,6 @@ func (uc *bookUseCase) Create(book entity.Book) (*entity.Book, error) {
 }
 
 func (uc *bookUseCase) Delete(id uuid.UUID) error {
-	logger.Log.Info().Str("usecase", "Delete").Msg("Remove book")
+	uc.logger.Info().Str("usecase", "Delete").Msg("⚙️ Remove book")
 	return uc.repo.Remove(id)
 }

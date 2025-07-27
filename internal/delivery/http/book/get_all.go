@@ -42,7 +42,7 @@ func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	params := request.ParseBookQueryParams(r)
 	books, err := h.UseCase.GetAll(params)
 	if err != nil {
-		h.Logger.Error().Err(err).Msg("❌ Failed to fetch books")
+		h.Logger.Error().Err(err).Msg("❌ Failed to fetch books, general")
 		response.FailedWithMeta(w, 500, "books", "getAllBooks", "Error Get All Books", nil)
 		return
 	}

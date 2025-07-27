@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"beta-book-api/config"
 	"bytes"
 	"net/http"
 	"os"
@@ -40,20 +41,14 @@ func (w *TelemetryWriter) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-func InitLoggerWithTelemetry() zerolog.Logger {
-	apiKey := os.Getenv("TELEMETRY_API_KEY")
-	if apiKey == "" {
-		panic("TELEMETRY_API_KEY not set")
-	}
-
-	endpoint := os.Getenv("TELEMETRY_ENDPOINT")
-	if endpoint == "" {
-		panic("TELEMETRY_ENDPOINT not set")
+func InitLoggerWithTelemetry(cfg *config.AppConfig) zerolog.Logger {
+	if cfg.TelemetryAPIKey == "" || cfg.TelemetryEndpoint == "" {
+		panic("Telemetry config is not set")
 	}
 
 	consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
-	logtailWriter := NewTelemetryWriter(apiKey, endpoint)
-	multiWriter := zerolog.MultiLevelWriter(consoleWriter, logtailWriter)
+	telemetryWriter := NewTelemetryWriter(cfg.TelemetryAPIKey, cfg.TelemetryEndpoint)
+	multiWriter := zerolog.MultiLevelWriter(consoleWriter, telemetryWriter)
 
 	return zerolog.New(multiWriter).With().Timestamp().Logger()
 }

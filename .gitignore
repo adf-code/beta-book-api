@@ -5,6 +5,7 @@
 /build/
 /dist/
 /out/
+/docker_build/
 *.exe
 *.test
 *.out
@@ -21,6 +22,7 @@ go.sum
 .env
 .env.*
 !.env.example
+!.env.docker.example
 
 # -----------------------------
 # OS Specific

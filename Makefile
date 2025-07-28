@@ -7,6 +7,10 @@ SWAG=swag
 
 all: dev
 
+# Install Deps
+install:
+	go install github.com/swaggo/swag/cmd/swag@latest
+
 # Generate Swagger docs
 swag:
 	@echo "📚 Generating Swagger docs..."
@@ -27,6 +31,16 @@ dev:
 	@$(MAKE) swag
 	@$(MAKE) build
 	@$(MAKE) run
+
+# Docker Build and Run
+docker-build-run:
+	docker-compose up -d
+
+# Docker Rebuild and Run
+docker-rebuild-run:
+	docker-compose down --remove-orphans --volumes
+	docker-compose build --no-cache
+	docker-compose up -d
 
 # Clean build
 clean:

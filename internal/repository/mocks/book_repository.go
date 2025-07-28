@@ -3,6 +3,7 @@ package mocks
 import (
 	"beta-book-api/internal/delivery/request"
 	"beta-book-api/internal/entity"
+	"database/sql"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 )
@@ -21,8 +22,8 @@ func (m *BookRepository) FetchByID(id uuid.UUID) (*entity.Book, error) {
 	return args.Get(0).(*entity.Book), args.Error(1)
 }
 
-func (m *BookRepository) Store(book *entity.Book) error {
-	args := m.Called(book)
+func (m *BookRepository) Store(tx *sql.Tx, book *entity.Book) error {
+	args := m.Called(tx, book)
 	return args.Error(0)
 }
 

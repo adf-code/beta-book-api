@@ -28,14 +28,15 @@ func main() {
 	cfg := config.LoadConfig()
 
 	logger := pkgLogger.InitLoggerWithTelemetry(cfg)
-	emailClient := pkgEmail.NewSendGridClient(cfg, logger)
+	sendGridClient := pkgEmail.NewSendGridClient(cfg, logger)
+	mail := sendGridClient.InitSendGrid()
 	postgresClient := pkgDatabase.NewPostgresClient(cfg, logger)
 	db := postgresClient.InitPostgresDB()
 
 	// Repository and HTTP handler
 	repo := repository.NewBookRepo(db)
-	bookUC := usecase.NewBookUseCase(repo, logger)
-	handler := deliveryHttp.SetupHandler(bookUC, logger, emailClient)
+	bookUC := usecase.NewBookUseCase(repo, db, logger, mail)
+	handler := deliveryHttp.SetupHandler(bookUC, logger, mail)
 
 	// HTTP server config
 	server := &http.Server{

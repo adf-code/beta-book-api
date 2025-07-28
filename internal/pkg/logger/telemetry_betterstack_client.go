@@ -10,21 +10,21 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type TelemetryWriter struct {
+type TelemetryClient struct {
 	client   *http.Client
 	apiKey   string
 	endpoint string
 }
 
-func NewTelemetryWriter(apiKey string, endpoint string) *TelemetryWriter {
-	return &TelemetryWriter{
+func NewTelemetryClient(apiKey string, endpoint string) *TelemetryClient {
+	return &TelemetryClient{
 		client:   &http.Client{Timeout: 5 * time.Second},
 		apiKey:   apiKey,
 		endpoint: endpoint,
 	}
 }
 
-func (w *TelemetryWriter) Write(p []byte) (n int, err error) {
+func (w *TelemetryClient) Write(p []byte) (n int, err error) {
 	req, err := http.NewRequest("POST", w.endpoint, bytes.NewBuffer(p))
 	if err != nil {
 		return 0, err
@@ -47,7 +47,7 @@ func InitLoggerWithTelemetry(cfg *config.AppConfig) zerolog.Logger {
 	}
 
 	consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
-	telemetryWriter := NewTelemetryWriter(cfg.TelemetryAPIKey, cfg.TelemetryEndpoint)
+	telemetryWriter := NewTelemetryClient(cfg.TelemetryAPIKey, cfg.TelemetryEndpoint)
 	multiWriter := zerolog.MultiLevelWriter(consoleWriter, telemetryWriter)
 
 	return zerolog.New(multiWriter).With().Timestamp().Logger()

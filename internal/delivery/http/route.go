@@ -3,7 +3,7 @@ package http
 import (
 	"beta-book-api/internal/delivery/http/book"
 	"beta-book-api/internal/delivery/http/middleware"
-	email "beta-book-api/internal/pkg/mail"
+	mail "beta-book-api/internal/pkg/mail"
 	"beta-book-api/internal/usecase"
 	"github.com/rs/zerolog"
 	"github.com/swaggo/http-swagger"
@@ -13,7 +13,7 @@ import (
 	_ "beta-book-api/docs"
 )
 
-func SetupHandler(bookUC usecase.BookUseCase, logger zerolog.Logger, emailClient email.SendGridClient) http.Handler {
+func SetupHandler(bookUC usecase.BookUseCase, logger zerolog.Logger, emailClient *mail.SendGridClient) http.Handler {
 	bookHandler := book.NewBookHandler(bookUC, logger, emailClient)
 	auth := middleware.AuthMiddleware
 

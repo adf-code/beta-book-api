@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  beta-book-api:
+    container_name: beta-book-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./docker_build/logs:/app/logs
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    container_name: beta-book-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: beta_book_api
+      POSTGRES_USER: beta_book_api_user
+      POSTGRES_PASSWORD: 789qwerty123
+    volumes:
+      - ./docker_build/pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:

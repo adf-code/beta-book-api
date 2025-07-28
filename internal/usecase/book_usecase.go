@@ -3,7 +3,9 @@ package usecase
 import (
 	"beta-book-api/internal/delivery/request"
 	"beta-book-api/internal/entity"
+	"beta-book-api/internal/pkg/mail"
 	"beta-book-api/internal/repository"
+	"database/sql"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 )
@@ -16,14 +18,18 @@ type BookUseCase interface {
 }
 
 type bookUseCase struct {
-	repo   repository.BookRepository
-	logger zerolog.Logger
+	repo        repository.BookRepository
+	db          *sql.DB
+	logger      zerolog.Logger
+	emailClient mail.EmailClient
 }
 
-func NewBookUseCase(repo repository.BookRepository, logger zerolog.Logger) BookUseCase {
+func NewBookUseCase(repo repository.BookRepository, db *sql.DB, logger zerolog.Logger, emailClient mail.EmailClient) BookUseCase {
 	return &bookUseCase{
-		repo:   repo,
-		logger: logger,
+		repo:        repo,
+		db:          db,
+		logger:      logger,
+		emailClient: emailClient,
 	}
 }
 
@@ -39,10 +45,33 @@ func (uc *bookUseCase) GetByID(id uuid.UUID) (*entity.Book, error) {
 
 func (uc *bookUseCase) Create(book entity.Book) (*entity.Book, error) {
 	uc.logger.Info().Str("usecase", "Create").Msg("⚙️ Store book")
-	err := uc.repo.Store(&book)
+	tx, err := uc.db.Begin()
 	if err != nil {
+		uc.logger.Error().Err(err).Msg("❌ Failed to begin transaction")
 		return nil, err
 	}
+
+	err = uc.repo.Store(tx, &book)
+	if err != nil {
+		tx.Rollback()
+		uc.logger.Error().Err(err).Msg("❌ Failed to store book, rolling back")
+		return nil, err
+	}
+
+	err = uc.emailClient.SendBookCreatedEmail(book) // custom wrapper
+	if err != nil {
+		tx.Rollback()
+		uc.logger.Error().Err(err).Msg("❌ Failed to send email, rolling back")
+		return nil, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		uc.logger.Error().Err(err).Msg("❌ Failed to commit transaction")
+		return nil, err
+	}
+
+	uc.logger.Info().Str("book_id", book.ID.String()).Msg("✅ Book created and email sent successfully")
 	return &book, nil
 }
 

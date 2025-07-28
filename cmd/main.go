@@ -3,7 +3,9 @@ package main
 import (
 	"beta-book-api/config"
 	deliveryHttp "beta-book-api/internal/delivery/http"
+	pkgDatabase "beta-book-api/internal/pkg/database"
 	pkgLogger "beta-book-api/internal/pkg/logger"
+	pkgEmail "beta-book-api/internal/pkg/mail"
 	"beta-book-api/internal/repository"
 	"beta-book-api/internal/usecase"
 	"context"
@@ -26,21 +28,15 @@ func main() {
 	cfg := config.LoadConfig()
 
 	logger := pkgLogger.InitLoggerWithTelemetry(cfg)
-
-	// Init DB
-	db := config.InitPostgresDB(cfg)
-
-	// ✅ Ping to test DB connection
-	if err := db.Ping(); err != nil {
-		logger.Fatal().Err(err).Msgf("❌ Failed to connect to PostgreSQL: %v", err)
-	} else {
-		logger.Info().Msgf("✅ Connected to PostgreSQL successfully")
-	}
+	sendGridClient := pkgEmail.NewSendGridClient(cfg, logger)
+	mail := sendGridClient.InitSendGrid()
+	postgresClient := pkgDatabase.NewPostgresClient(cfg, logger)
+	db := postgresClient.InitPostgresDB()
 
 	// Repository and HTTP handler
 	repo := repository.NewBookRepo(db)
-	bookUC := usecase.NewBookUseCase(repo, logger)
-	handler := deliveryHttp.SetupHandler(bookUC, logger)
+	bookUC := usecase.NewBookUseCase(repo, db, logger, mail)
+	handler := deliveryHttp.SetupHandler(bookUC, logger, mail)
 
 	// HTTP server config
 	server := &http.Server{

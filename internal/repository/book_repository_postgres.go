@@ -91,8 +91,8 @@ func (r *bookRepo) FetchByID(id uuid.UUID) (*entity.Book, error) {
 	return &b, nil
 }
 
-func (r *bookRepo) Store(book *entity.Book) error {
-	return r.DB.QueryRow(
+func (r *bookRepo) Store(tx *sql.Tx, book *entity.Book) error {
+	return tx.QueryRow(
 		"INSERT INTO books (title, author, year) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at",
 		book.Title, book.Author, book.Year,
 	).Scan(&book.ID, &book.CreatedAt, &book.UpdatedAt)

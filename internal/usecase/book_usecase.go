@@ -5,45 +5,46 @@ import (
 	"beta-book-api/internal/entity"
 	"beta-book-api/internal/pkg/mail"
 	"beta-book-api/internal/repository"
+	"context"
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 )
 
 type BookUseCase interface {
-	GetAll(params request.BookListQueryParams) ([]entity.Book, error)
-	GetByID(id uuid.UUID) (*entity.Book, error)
-	Create(book entity.Book) (*entity.Book, error)
-	Delete(id uuid.UUID) error
+	GetAll(ctx context.Context, params request.BookListQueryParams) ([]entity.Book, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*entity.Book, error)
+	Create(ctx context.Context, book entity.Book) (*entity.Book, error)
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type bookUseCase struct {
-	repo        repository.BookRepository
+	bookRepo    repository.BookRepository
 	db          *sql.DB
 	logger      zerolog.Logger
 	emailClient mail.EmailClient
 }
 
-func NewBookUseCase(repo repository.BookRepository, db *sql.DB, logger zerolog.Logger, emailClient mail.EmailClient) BookUseCase {
+func NewBookUseCase(bookRepo repository.BookRepository, db *sql.DB, logger zerolog.Logger, emailClient mail.EmailClient) BookUseCase {
 	return &bookUseCase{
-		repo:        repo,
+		bookRepo:    bookRepo,
 		db:          db,
 		logger:      logger,
 		emailClient: emailClient,
 	}
 }
 
-func (uc *bookUseCase) GetAll(params request.BookListQueryParams) ([]entity.Book, error) {
+func (uc *bookUseCase) GetAll(ctx context.Context, params request.BookListQueryParams) ([]entity.Book, error) {
 	uc.logger.Info().Str("usecase", "GetAll").Msg("⚙️ Fetching all books")
-	return uc.repo.FetchWithQueryParams(params)
+	return uc.bookRepo.FetchWithQueryParams(ctx, params)
 }
 
-func (uc *bookUseCase) GetByID(id uuid.UUID) (*entity.Book, error) {
+func (uc *bookUseCase) GetByID(ctx context.Context, id uuid.UUID) (*entity.Book, error) {
 	uc.logger.Info().Str("usecase", "GetByID").Msg("⚙️ Fetching book by ID")
-	return uc.repo.FetchByID(id)
+	return uc.bookRepo.FetchByID(ctx, id)
 }
 
-func (uc *bookUseCase) Create(book entity.Book) (*entity.Book, error) {
+func (uc *bookUseCase) Create(ctx context.Context, book entity.Book) (*entity.Book, error) {
 	uc.logger.Info().Str("usecase", "Create").Msg("⚙️ Store book")
 	tx, err := uc.db.Begin()
 	if err != nil {
@@ -51,7 +52,7 @@ func (uc *bookUseCase) Create(book entity.Book) (*entity.Book, error) {
 		return nil, err
 	}
 
-	err = uc.repo.Store(tx, &book)
+	err = uc.bookRepo.Store(ctx, tx, &book)
 	if err != nil {
 		tx.Rollback()
 		uc.logger.Error().Err(err).Msg("❌ Failed to store book, rolling back")
@@ -75,7 +76,7 @@ func (uc *bookUseCase) Create(book entity.Book) (*entity.Book, error) {
 	return &book, nil
 }
 
-func (uc *bookUseCase) Delete(id uuid.UUID) error {
+func (uc *bookUseCase) Delete(ctx context.Context, id uuid.UUID) error {
 	uc.logger.Info().Str("usecase", "Delete").Msg("⚙️ Remove book")
-	return uc.repo.Remove(id)
+	return uc.bookRepo.Remove(ctx, id)
 }

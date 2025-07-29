@@ -40,7 +40,7 @@ import (
 func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info().Msg("📥 Incoming GetAll request")
 	params := request.ParseBookQueryParams(r)
-	books, err := h.UseCase.GetAll(params)
+	books, err := h.BookUC.GetAll(r.Context(), params)
 	if err != nil {
 		h.Logger.Error().Err(err).Msg("❌ Failed to fetch books, general")
 		response.FailedWithMeta(w, 500, "books", "getAllBooks", "Error Get All Books", nil)

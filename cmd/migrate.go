@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"github.com/joho/godotenv"
 	"log"
 	"os"
 
@@ -10,6 +11,10 @@ import (
 )
 
 func main() {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal("Missing required environment variables")
+	}
+
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: go run cmd/migrate.go [up|down]")
 	}

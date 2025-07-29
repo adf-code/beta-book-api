@@ -10,6 +10,10 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
+type EmailClient interface {
+	SendBookCreatedEmail(book entity.Book) error
+}
+
 type SendGridClient struct {
 	apiKey      string
 	senderName  string

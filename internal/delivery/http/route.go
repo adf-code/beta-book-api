@@ -3,54 +3,30 @@ package http
 import (
 	"beta-book-api/internal/delivery/http/book"
 	"beta-book-api/internal/delivery/http/middleware"
-	mail "beta-book-api/internal/pkg/mail"
+	"beta-book-api/internal/delivery/http/router"
 	"beta-book-api/internal/usecase"
 	"github.com/rs/zerolog"
+
 	"github.com/swaggo/http-swagger"
 	"net/http"
-	"strings"
-
-	_ "beta-book-api/docs"
 )
 
-func SetupHandler(bookUC usecase.BookUseCase, logger zerolog.Logger, emailClient *mail.SendGridClient) http.Handler {
-	bookHandler := book.NewBookHandler(bookUC, logger, emailClient)
-	auth := middleware.AuthMiddleware
+func SetupHandler(bookUC usecase.BookUseCase, bookCoverUC usecase.BookCoverUseCase, logger zerolog.Logger) http.Handler {
+	bookHandler := book.NewBookHandler(bookUC, bookCoverUC, logger)
+	auth := middleware.AuthMiddleware(logger)
+	log := middleware.LoggingMiddleware(logger)
 
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		path := r.URL.Path
-		method := r.Method
+	r := router.NewRouter()
 
-		// ✅ Swagger
-		if strings.HasPrefix(path, "/swagger/") {
-			httpSwagger.WrapHandler(w, r)
-			return
-		}
+	// Swagger
+	r.Handle(http.MethodGet, "/swagger/", httpSwagger.WrapHandler)
 
-		// ✅ All API prefixed with /api/v1
-		if !strings.HasPrefix(path, "/api/v1") {
-			http.NotFound(w, r)
-			return
-		}
+	// API Routes
+	r.Handle(http.MethodGet, "/api/v1/books", middleware.Chain(log, auth)(bookHandler.GetAll))
+	r.Handle(http.MethodGet, "/api/v1/books/{id}", middleware.Chain(log, auth)(bookHandler.GetByID))
+	r.Handle(http.MethodPost, "/api/v1/books/upload-cover", middleware.Chain(log, auth)(bookHandler.UploadCover))
+	r.Handle(http.MethodPost, "/api/v1/books", middleware.Chain(log, auth)(bookHandler.Create))
+	r.Handle(http.MethodDelete, "/api/v1/books/{id}", middleware.Chain(log, auth)(bookHandler.Delete))
 
-		// Remove prefix for routing logic
-		apiPath := strings.TrimPrefix(path, "/api/v1")
-
-		switch {
-		case apiPath == "/books" && method == http.MethodGet:
-			auth(bookHandler.GetAll)(w, r)
-
-		case strings.HasPrefix(apiPath, "/books/") && method == http.MethodGet:
-			auth(bookHandler.GetByID)(w, r)
-
-		case apiPath == "/books" && method == http.MethodPost:
-			auth(bookHandler.Create)(w, r)
-
-		case strings.HasPrefix(apiPath, "/books/") && method == http.MethodDelete:
-			auth(bookHandler.Delete)(w, r)
-
-		default:
-			http.NotFound(w, r)
-		}
-	})
+	return r
 }

@@ -18,9 +18,9 @@ import (
 
 func newTestBookUseCase() usecase.BookUseCase {
 	mockRepo := new(repoMocks.BookRepository)
-	db := &sql.DB{}                              // not used in test unless you're testing transaction
-	logger := zerolog.Nop()                      // silent logger for test
-	emailClient := new(mailMocks.SendGridClient) // replace with actual mock if needed
+	db := &sql.DB{}
+	logger := zerolog.Nop()
+	emailClient := new(mailMocks.SendGridClient)
 	return usecase.NewBookUseCase(mockRepo, db, logger, emailClient)
 }
 

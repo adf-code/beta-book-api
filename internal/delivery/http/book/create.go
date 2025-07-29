@@ -31,7 +31,7 @@ func (h *BookHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newBook, err := h.UseCase.Create(book)
+	newBook, err := h.BookUC.Create(r.Context(), book)
 	if err != nil {
 		h.Logger.Error().Err(err).Msg("❌ Failed to store book, general")
 		response.Failed(w, 500, "books", "createBook", "Error Create Book")

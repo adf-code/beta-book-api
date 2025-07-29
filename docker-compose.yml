@@ -32,5 +32,21 @@ services:
     networks:
       - app-network
 
+  minio:
+    image: minio/minio:latest
+    container_name: beta-book-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ioadminminio123
+      MINIO_ROOT_PASSWORD: ioadminminio123
+    command: server /data --console-address ":9001"
+    volumes:
+      - ./docker_build/minio/data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
 networks:
   app-network:

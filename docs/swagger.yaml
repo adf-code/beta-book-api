@@ -3,6 +3,10 @@ definitions:
     properties:
       author:
         type: string
+      cover:
+        items:
+          $ref: '#/definitions/entity.BookCover'
+        type: array
       created_at:
         type: string
       id:
@@ -13,6 +17,21 @@ definitions:
         type: string
       year:
         type: integer
+    type: object
+  entity.BookCover:
+    properties:
+      book_id:
+        type: string
+      created_at:
+        type: string
+      file_name:
+        type: string
+      file_url:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
     type: object
   response.APIResponse:
     properties:
@@ -221,6 +240,41 @@ paths:
       security:
       - BearerAuth: []
       summary: Get book by ID
+      tags:
+      - books
+  /books/cover/{id}:
+    get:
+      description: Retrieve a book cover entity using book UUID
+      parameters:
+      - description: UUID of the book
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "400":
+          description: Invalid UUID
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "404":
+          description: Book not found
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get cover by book ID
       tags:
       - books
 swagger: "2.0"

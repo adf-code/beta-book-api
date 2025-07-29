@@ -23,6 +23,7 @@ func SetupHandler(bookUC usecase.BookUseCase, bookCoverUC usecase.BookCoverUseCa
 
 	// API Routes
 	r.Handle(http.MethodGet, "/api/v1/books", middleware.Chain(log, auth)(bookHandler.GetAll))
+	r.Handle(http.MethodGet, "/api/v1/books/cover/{id}", middleware.Chain(log, auth)(bookHandler.GetCoverByBookID))
 	r.Handle(http.MethodGet, "/api/v1/books/{id}", middleware.Chain(log, auth)(bookHandler.GetByID))
 	r.Handle(http.MethodPost, "/api/v1/books/upload-cover", middleware.Chain(log, auth)(bookHandler.UploadCover))
 	r.Handle(http.MethodPost, "/api/v1/books", middleware.Chain(log, auth)(bookHandler.Create))

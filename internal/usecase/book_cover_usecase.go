@@ -78,5 +78,6 @@ func (uc *bookCoverUseCase) Upload(ctx context.Context, bookID uuid.UUID, file m
 }
 
 func (uc *bookCoverUseCase) GetByBookID(ctx context.Context, bookID uuid.UUID) ([]entity.BookCover, error) {
+	uc.logger.Info().Str("usecase", "GetByBookID").Msg("⚙️ Fetching books cover by book id")
 	return uc.bookCoverRepo.FetchByBookID(ctx, bookID)
 }

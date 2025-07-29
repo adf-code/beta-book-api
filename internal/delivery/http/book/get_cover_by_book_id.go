@@ -2,7 +2,6 @@ package book
 
 import (
 	"beta-book-api/internal/delivery/response"
-	"beta-book-api/internal/entity"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -11,9 +10,9 @@ import (
 	"strings"
 )
 
-// GetBookByID godoc
-// @Summary      Get book by ID
-// @Description  Retrieve a book entity using its UUID
+// GetCoverByBookID godoc
+// @Summary      Get cover by book ID
+// @Description  Retrieve a book cover entity using book UUID
 // @Tags         books
 // @Security     BearerAuth
 // @Param        id   path      string  true  "UUID of the book"
@@ -22,10 +21,10 @@ import (
 // @Failure      401  {object}  response.APIResponse  "Unauthorized"
 // @Failure      404  {object}  response.APIResponse  "Book not found"
 // @Failure      500  {object}  response.APIResponse  "Internal server error"
-// @Router       /books/{id} [get]
-func (h *BookHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+// @Router       /books/cover/{id} [get]
+func (h *BookHandler) GetCoverByBookID(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info().Msg("📥 Incoming GetByID request")
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/v1/books/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/v1/books/cover/")
 	if idStr == "" {
 		h.Logger.Error().Msg("❌ Failed to get book by ID, missing ID parameter")
 		response.Failed(w, 422, "books", "getBookByID", "Missing ID Parameter, Get Book by ID")
@@ -48,7 +47,13 @@ func (h *BookHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		response.Failed(w, 500, "books", "getBookByID", "Error Get Book by ID")
 		return
 	}
-	book.BookCover = make([]entity.BookCover, 0)
+	booksCover, err := h.BookCoverUC.GetByBookID(r.Context(), id)
+	if err != nil {
+		h.Logger.Error().Err(err).Msg("❌ Failed to fetch books cover, general")
+		response.FailedWithMeta(w, 500, "books", "getAllBooks", "Error Get Book Cover by Book ID", nil)
+		return
+	}
+	book.BookCover = booksCover
 	h.Logger.Info().Str("data", fmt.Sprint(book.ID)).Msg("✅ Successfully get book by id")
 	response.Success(w, 200, "books", "getBookByID", "Success Get Book by ID", book)
 }

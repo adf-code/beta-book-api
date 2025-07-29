@@ -29,7 +29,7 @@ func (r *bookCoverRepo) Store(ctx context.Context, tx *sql.Tx, cover *entity.Boo
 }
 
 func (r *bookCoverRepo) FetchByBookID(ctx context.Context, bookID uuid.UUID) ([]entity.BookCover, error) {
-	query := `SELECT id, book_id, file_name, file_url, created_at
+	query := `SELECT id, book_id, file_name, file_url, created_at, updated_at
 	          FROM book_covers
 	          WHERE book_id = $1
 	          ORDER BY created_at DESC`
@@ -43,7 +43,7 @@ func (r *bookCoverRepo) FetchByBookID(ctx context.Context, bookID uuid.UUID) ([]
 	var covers []entity.BookCover
 	for rows.Next() {
 		var c entity.BookCover
-		if err := rows.Scan(&c.ID, &c.BookID, &c.FileName, &c.FileURL, &c.CreatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.BookID, &c.FileName, &c.FileURL, &c.CreatedAt, &c.UpdatedAt); err != nil {
 			return nil, err
 		}
 		covers = append(covers, c)

@@ -1,17 +1,17 @@
 package book
 
 import (
-	mail "beta-book-api/internal/pkg/mail"
 	"beta-book-api/internal/usecase"
 	"github.com/rs/zerolog"
 )
 
 type BookHandler struct {
-	UseCase     usecase.BookUseCase
+	BookUC      usecase.BookUseCase
+	BookCoverUC usecase.BookCoverUseCase
 	Logger      zerolog.Logger
-	EmailClient *mail.SendGridClient
+	//EmailClient *mail.SendGridClient
 }
 
-func NewBookHandler(uc usecase.BookUseCase, logger zerolog.Logger, emailClient *mail.SendGridClient) *BookHandler {
-	return &BookHandler{UseCase: uc, Logger: logger, EmailClient: emailClient}
+func NewBookHandler(bookUC usecase.BookUseCase, bookCoverUC usecase.BookCoverUseCase, logger zerolog.Logger) *BookHandler {
+	return &BookHandler{BookUC: bookUC, BookCoverUC: bookCoverUC, Logger: logger}
 }

@@ -36,7 +36,7 @@ func (h *BookHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		response.Failed(w, 422, "books", "getBookByID", "Invalid UUID, Get Book by ID")
 		return
 	}
-	book, err := h.UseCase.GetByID(id)
+	book, err := h.BookUC.GetByID(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			h.Logger.Info().Msg("✅ Successfully get book by id, data not found")

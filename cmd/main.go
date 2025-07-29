@@ -6,6 +6,7 @@ import (
 	pkgDatabase "beta-book-api/internal/pkg/database"
 	pkgLogger "beta-book-api/internal/pkg/logger"
 	pkgEmail "beta-book-api/internal/pkg/mail"
+	pkgOS "beta-book-api/internal/pkg/object_storage"
 	"beta-book-api/internal/repository"
 	"beta-book-api/internal/usecase"
 	"context"
@@ -13,7 +14,6 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -32,11 +32,15 @@ func main() {
 	mail := sendGridClient.InitSendGrid()
 	postgresClient := pkgDatabase.NewPostgresClient(cfg, logger)
 	db := postgresClient.InitPostgresDB()
+	minioClient := pkgOS.NewMinioClient(cfg, logger)
+	objectStorage := minioClient.InitMinio()
 
 	// Repository and HTTP handler
-	repo := repository.NewBookRepo(db)
-	bookUC := usecase.NewBookUseCase(repo, db, logger, mail)
-	handler := deliveryHttp.SetupHandler(bookUC, logger, mail)
+	bookRepo := repository.NewBookRepo(db)
+	bookCoverRepo := repository.NewBookCoverRepo(db)
+	bookUC := usecase.NewBookUseCase(bookRepo, db, logger, mail)
+	bookCoverUC := usecase.NewBookCoverUseCase(bookCoverRepo, db, logger, objectStorage)
+	handler := deliveryHttp.SetupHandler(bookUC, bookCoverUC, logger)
 
 	// HTTP server config
 	server := &http.Server{
@@ -49,7 +53,7 @@ func main() {
 		logger.Info().Msgf("🟢 Server running on http://localhost:%s", cfg.Port)
 		logger.Info().Msgf("📚 Swagger running on http://localhost:%s/swagger/index.html", cfg.Port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatal().Err(err).Msgf("❌ Server failed: %v", err)
+			logger.Fatal().Err(err).Msgf("❌ Server failed: %v", err)
 		}
 	}()
 
@@ -75,10 +79,10 @@ func main() {
 	logger.Info().Msgf("✅ Server shutdown completed.")
 }
 
-func closePostgres(db *sql.DB, telemetryLog zerolog.Logger) {
+func closePostgres(db *sql.DB, logger zerolog.Logger) {
 	if err := db.Close(); err != nil {
-		telemetryLog.Info().Msgf("⚠️ Failed to close PostgreSQL connection: %v", err)
+		logger.Info().Msgf("⚠️ Failed to close PostgreSQL connection: %v", err)
 	} else {
-		telemetryLog.Info().Msgf("🔒 PostgreSQL connection closed.")
+		logger.Info().Msgf("🔒 PostgreSQL connection closed.")
 	}
 }

@@ -19,6 +19,10 @@ type AppConfig struct {
 	TelemetryEndpoint   string
 	SendGridAPIKey      string
 	SendGridSenderEmail string
+	MiniEndpoint        string
+	MinioAccessKey      string
+	MinioSecretKey      string
+	MinioBucketName     string
 }
 
 func LoadConfig() *AppConfig {
@@ -40,6 +44,10 @@ func LoadConfig() *AppConfig {
 		TelemetryEndpoint:   getEnv("TELEMETRY_ENDPOINT", "not_set"),
 		SendGridAPIKey:      getEnv("SENDGRID_API_KEY", "not_set"),
 		SendGridSenderEmail: getEnv("SENDGRID_SENDER_EMAIL", "not_set"),
+		MiniEndpoint:        getEnv("MINIO_ENDPOINT", "not_set"),
+		MinioAccessKey:      getEnv("MINIO_ACCESS_KEY", "not_set"),
+		MinioSecretKey:      getEnv("MINIO_SECRET_KEY", "not_set"),
+		MinioBucketName:     getEnv("MINIO_BUCKET_NAME", "not_set"),
 	}
 }
 

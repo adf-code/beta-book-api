@@ -33,7 +33,7 @@ func (h *BookHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		response.Failed(w, 422, "books", "deleteBookByID", "Invalid UUID, Delete Book by ID")
 		return
 	}
-	if err := h.UseCase.Delete(id); err != nil {
+	if err := h.BookUC.Delete(r.Context(), id); err != nil {
 		h.Logger.Error().Err(err).Msg("❌ Failed to remove book, general")
 		response.Failed(w, 500, "books", "deleteBookByID", "Error Delete Book")
 		return

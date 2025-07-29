@@ -198,6 +198,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/books/cover/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a book cover entity using book UUID",
+                "tags": [
+                    "books"
+                ],
+                "summary": "Get cover by book ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID of the book",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid UUID",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/books/{id}": {
             "get": {
                 "security": [
@@ -314,6 +369,12 @@ const docTemplate = `{
                 "author": {
                     "type": "string"
                 },
+                "cover": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.BookCover"
+                    }
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -328,6 +389,29 @@ const docTemplate = `{
                 },
                 "year": {
                     "type": "integer"
+                }
+            }
+        },
+        "entity.BookCover": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "file_name": {
+                    "type": "string"
+                },
+                "file_url": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },

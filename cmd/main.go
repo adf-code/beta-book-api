@@ -1,7 +1,23 @@
+// @title           Beta Book API
+// @version         1.0
+// @description     API service to manage books using Clean Architecture
+
+// @contact.name   ADF Code
+// @contact.url    https://github.com/adf-code
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Using token header using the Bearer scheme. Example: "Bearer {token}"
+
 package main
 
 import (
 	"beta-book-api/config"
+	_ "beta-book-api/docs"
 	deliveryHttp "beta-book-api/internal/delivery/http"
 	pkgDatabase "beta-book-api/internal/pkg/database"
 	pkgLogger "beta-book-api/internal/pkg/logger"

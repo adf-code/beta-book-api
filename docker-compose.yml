@@ -14,6 +14,7 @@ services:
       - ./docker_build/logs:/app/logs
     depends_on:
       - postgres
+      - minio
     networks:
       - app-network
     restart: unless-stopped
@@ -47,6 +48,25 @@ services:
     networks:
       - app-network
     restart: unless-stopped
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - minio
+    networks:
+      - app-network
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set myminio http://minio:9000 ioadminminio123 ioadminminio123;
+      if ! mc ls myminio/beta-book-api >/dev/null 2>&1; then
+        echo 'Creating bucket my-bucket...';
+        mc mb myminio/beta-book-api;
+        mc policy set public myminio/beta-book-api;
+      else
+        echo 'Bucket my-bucket already exists.';
+      fi
+      "
 
 networks:
   app-network:

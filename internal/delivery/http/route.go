@@ -18,16 +18,14 @@ func SetupHandler(bookUC usecase.BookUseCase, bookCoverUC usecase.BookCoverUseCa
 
 	r := router.NewRouter()
 
-	// Swagger
-	r.Handle(http.MethodGet, "/swagger/", httpSwagger.WrapHandler)
+	r.HandlePrefix(http.MethodGet, "/swagger/", httpSwagger.WrapHandler)
 
-	// API Routes
-	r.Handle(http.MethodGet, "/api/v1/books", middleware.Chain(log, auth)(bookHandler.GetAll))
-	r.Handle(http.MethodGet, "/api/v1/books/cover/{id}", middleware.Chain(log, auth)(bookHandler.GetCoverByBookID))
-	r.Handle(http.MethodGet, "/api/v1/books/{id}", middleware.Chain(log, auth)(bookHandler.GetByID))
-	r.Handle(http.MethodPost, "/api/v1/books/upload-cover", middleware.Chain(log, auth)(bookHandler.UploadCover))
-	r.Handle(http.MethodPost, "/api/v1/books", middleware.Chain(log, auth)(bookHandler.Create))
-	r.Handle(http.MethodDelete, "/api/v1/books/{id}", middleware.Chain(log, auth)(bookHandler.Delete))
+	r.Handle("GET", "/api/v1/books/cover/{id}", middleware.Chain(log, auth)(bookHandler.GetCoverByBookID))
+	r.Handle("GET", "/api/v1/books/{id}", middleware.Chain(log, auth)(bookHandler.GetByID))
+	r.Handle("GET", "/api/v1/books", middleware.Chain(log, auth)(bookHandler.GetAll))
+	r.Handle("POST", "/api/v1/books/upload-cover", middleware.Chain(log, auth)(bookHandler.UploadCover))
+	r.Handle("POST", "/api/v1/books", middleware.Chain(log, auth)(bookHandler.Create))
+	r.Handle("DELETE", "/api/v1/books/{id}", middleware.Chain(log, auth)(bookHandler.Delete))
 
 	return r
 }

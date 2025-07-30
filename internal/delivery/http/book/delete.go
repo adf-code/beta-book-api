@@ -1,10 +1,10 @@
 package book
 
 import (
+	"beta-book-api/internal/delivery/http/router"
 	"beta-book-api/internal/delivery/response"
 	"github.com/google/uuid"
 	"net/http"
-	"strings"
 )
 
 // DeleteBookByID godoc
@@ -21,7 +21,7 @@ import (
 // @Router       /books/{id} [delete]
 func (h *BookHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info().Msg("📥 Incoming Delete request")
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/v1/books/")
+	idStr := router.GetParam(r, "id")
 	if idStr == "" {
 		h.Logger.Error().Msg("❌ Failed to remove book, missing ID parameter")
 		response.Failed(w, 422, "books", "deleteBookByID", "Missing ID Parameter, Delete Book by ID")

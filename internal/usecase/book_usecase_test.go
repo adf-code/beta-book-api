@@ -6,7 +6,7 @@ import (
 	mailMocks "beta-book-api/internal/pkg/mail/mocks"
 	repoMocks "beta-book-api/internal/repository/mocks"
 	"beta-book-api/internal/usecase"
-	"database/sql"
+	"context"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/rs/zerolog"
 	"testing"
@@ -15,14 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
-
-func newTestBookUseCase() usecase.BookUseCase {
-	mockRepo := new(repoMocks.BookRepository)
-	db := &sql.DB{}
-	logger := zerolog.Nop()
-	emailClient := new(mailMocks.SendGridClient)
-	return usecase.NewBookUseCase(mockRepo, db, logger, emailClient)
-}
 
 func TestGetAllBooks(t *testing.T) {
 	db, _, err := sqlmock.New()
@@ -39,8 +31,8 @@ func TestGetAllBooks(t *testing.T) {
 		{ID: uuid.New(), Title: "Go Programming", Author: "Alice", Year: 2020},
 	}
 
-	mockRepo.On("FetchWithQueryParams", mock.Anything).Return(expected, nil)
-	result, err := bookUC.GetAll(request.BookListQueryParams{})
+	mockRepo.On("FetchWithQueryParams", mock.Anything, mock.Anything).Return(expected, nil)
+	result, err := bookUC.GetAll(context.TODO(), request.BookListQueryParams{})
 
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result)
@@ -61,9 +53,9 @@ func TestGetBookByID(t *testing.T) {
 	id := uuid.New()
 	expectedBook := &entity.Book{ID: id, Title: "Clean Code", Author: "Robert C. Martin", Year: 2008}
 
-	mockRepo.On("FetchByID", id).Return(expectedBook, nil)
+	mockRepo.On("FetchByID", mock.Anything, id).Return(expectedBook, nil)
 
-	result, err := bookUC.GetByID(id)
+	result, err := bookUC.GetByID(context.TODO(), id)
 
 	assert.NoError(t, err)
 	assert.Equal(t, expectedBook, result)
@@ -92,12 +84,12 @@ func TestCreateBook(t *testing.T) {
 	}
 
 	// Setup repo expectations (ignore actual DB op)
-	mockRepo.On("Store", mock.AnythingOfType("*sql.Tx"), &book).Return(nil)
+	mockRepo.On("Store", mock.Anything, mock.AnythingOfType("*sql.Tx"), &book).Return(nil)
 	mockEmail.On("SendBookCreatedEmail", book).Return(nil)
 
 	// Step 3: Call usecase
 	bookUC := usecase.NewBookUseCase(mockRepo, db, logger, mockEmail)
-	result, err := bookUC.Create(book)
+	result, err := bookUC.Create(context.TODO(), book)
 
 	// Step 4: Assertions
 	assert.NoError(t, err)
@@ -119,9 +111,9 @@ func TestDeleteBook(t *testing.T) {
 	bookUC := usecase.NewBookUseCase(mockRepo, db, logger, mockEmail)
 
 	id := uuid.New()
-	mockRepo.On("Remove", id).Return(nil)
+	mockRepo.On("Remove", mock.Anything, id).Return(nil)
 
-	err = bookUC.Delete(id)
+	err = bookUC.Delete(context.TODO(), id)
 
 	assert.NoError(t, err)
 	mockRepo.AssertExpectations(t)

@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   entity.Book:
     properties:
@@ -50,8 +51,14 @@ definitions:
         description: '"success" or "failed"'
         type: string
     type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    name: ADF Code
+    url: https://github.com/adf-code
+  description: API service to manage books using Clean Architecture
+  title: Beta Book API
+  version: "1.0"
 paths:
   /books:
     get:
@@ -277,4 +284,10 @@ paths:
       summary: Get cover by book ID
       tags:
       - books
+securityDefinitions:
+  BearerAuth:
+    description: 'Using token header using the Bearer scheme. Example: "Bearer {token}"'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

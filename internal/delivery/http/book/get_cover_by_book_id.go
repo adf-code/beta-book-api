@@ -1,13 +1,13 @@
 package book
 
 import (
+	"beta-book-api/internal/delivery/http/router"
 	"beta-book-api/internal/delivery/response"
 	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"net/http"
-	"strings"
 )
 
 // GetCoverByBookID godoc
@@ -24,7 +24,7 @@ import (
 // @Router       /books/cover/{id} [get]
 func (h *BookHandler) GetCoverByBookID(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info().Msg("📥 Incoming GetByID request")
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/v1/books/cover/")
+	idStr := router.GetParam(r, "id")
 	if idStr == "" {
 		h.Logger.Error().Msg("❌ Failed to get book by ID, missing ID parameter")
 		response.Failed(w, 422, "books", "getBookByID", "Missing ID Parameter, Get Book by ID")

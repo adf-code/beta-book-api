@@ -11,6 +11,10 @@ import (
 	"os"
 )
 
+type ObjectStorageClient interface {
+	UploadFile(ctx context.Context, file multipart.File, objectName string, size int64, contentType string) (string, error)
+}
+
 type MinioClient struct {
 	endpoint   string
 	accessKey  string

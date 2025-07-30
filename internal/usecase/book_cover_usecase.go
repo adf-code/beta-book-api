@@ -24,10 +24,10 @@ type bookCoverUseCase struct {
 	bookCoverRepo repository.BookCoverRepository
 	db            *sql.DB
 	logger        zerolog.Logger
-	objectStorage *object_storage.MinioClient
+	objectStorage object_storage.ObjectStorageClient
 }
 
-func NewBookCoverUseCase(bookCoverRepo repository.BookCoverRepository, db *sql.DB, logger zerolog.Logger, storage *object_storage.MinioClient) BookCoverUseCase {
+func NewBookCoverUseCase(bookCoverRepo repository.BookCoverRepository, db *sql.DB, logger zerolog.Logger, storage object_storage.ObjectStorageClient) BookCoverUseCase {
 	return &bookCoverUseCase{
 		bookCoverRepo: bookCoverRepo,
 		db:            db,

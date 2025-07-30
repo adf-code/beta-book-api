@@ -9,7 +9,14 @@ all: dev
 
 # Install Deps
 install:
+	@echo "🧩 Installing dependency packages..."
 	go install github.com/swaggo/swag/cmd/swag@latest
+	go install github.com/vektra/mockery/v2@latest
+
+# Generate Swagger docs
+unit-test:
+	@echo "🧲 Starting unit test..."
+	go test ./internal/usecase -v
 
 # Generate Swagger docs
 swag:

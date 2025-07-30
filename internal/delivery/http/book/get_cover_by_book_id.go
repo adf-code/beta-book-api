@@ -3,6 +3,7 @@ package book
 import (
 	"beta-book-api/internal/delivery/http/router"
 	"beta-book-api/internal/delivery/response"
+	"beta-book-api/internal/entity"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -53,7 +54,12 @@ func (h *BookHandler) GetCoverByBookID(w http.ResponseWriter, r *http.Request) {
 		response.FailedWithMeta(w, 500, "books", "getAllBooks", "Error Get Book Cover by Book ID", nil)
 		return
 	}
-	book.BookCover = booksCover
+
+	if len(booksCover) == 0 {
+		book.BookCover = make([]entity.BookCover, 0)
+	} else {
+		book.BookCover = booksCover
+	}
 	h.Logger.Info().Str("data", fmt.Sprint(book.ID)).Msg("✅ Successfully get book by id")
 	response.Success(w, 200, "books", "getBookByID", "Success Get Book by ID", book)
 }

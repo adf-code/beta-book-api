@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"beta-book-api/internal/migration"
+	"github.com/adf-code/beta-book-api/internal/migration"
 	_ "github.com/lib/pq"
 )
 

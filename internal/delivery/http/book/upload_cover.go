@@ -1,7 +1,7 @@
 package book
 
 import (
-	"beta-book-api/internal/delivery/response"
+	"github.com/adf-code/beta-book-api/internal/delivery/response"
 	"github.com/google/uuid"
 	"net/http"
 )

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"beta-book-api/internal/delivery/response"
+	"github.com/adf-code/beta-book-api/internal/delivery/response"
 	"github.com/rs/zerolog"
 	"net/http"
 	"strings"

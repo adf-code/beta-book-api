@@ -1,7 +1,7 @@
 package book
 
 import (
-	"beta-book-api/internal/usecase"
+	"github.com/adf-code/beta-book-api/internal/usecase"
 	"github.com/rs/zerolog"
 )
 

@@ -1,8 +1,8 @@
 version: "3.8"
 
 services:
-  beta-book-api:
-    container_name: beta-book-api
+  github.com/adf-code/beta-book-api:
+    container_name: github.com/adf-code/beta-book-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -59,10 +59,10 @@ services:
       /bin/sh -c "
       sleep 5;
       mc alias set myminio http://minio:9000 ioadminminio123 ioadminminio123;
-      if ! mc ls myminio/beta-book-api >/dev/null 2>&1; then
+      if ! mc ls myminio/github.com/adf-code/beta-book-api >/dev/null 2>&1; then
         echo 'Creating bucket my-bucket...';
-        mc mb myminio/beta-book-api;
-        mc policy set public myminio/beta-book-api;
+        mc mb myminio/github.com/adf-code/beta-book-api;
+        mc policy set public myminio/github.com/adf-code/beta-book-api;
       else
         echo 'Bucket my-bucket already exists.';
       fi

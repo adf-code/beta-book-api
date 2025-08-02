@@ -1,9 +1,9 @@
 package database
 
 import (
-	"beta-book-api/config"
 	"database/sql"
 	"fmt"
+	"github.com/adf-code/beta-book-api/config"
 	_ "github.com/lib/pq"
 	"github.com/rs/zerolog"
 )

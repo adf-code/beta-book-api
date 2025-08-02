@@ -1,10 +1,10 @@
 package mail
 
 import (
-	"beta-book-api/config"
-	"beta-book-api/internal/entity"
 	"errors"
 	"fmt"
+	"github.com/adf-code/beta-book-api/config"
+	"github.com/adf-code/beta-book-api/internal/entity"
 	"github.com/rs/zerolog"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"

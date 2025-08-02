@@ -284,6 +284,17 @@ paths:
       summary: Get cover by book ID
       tags:
       - books
+  /healthz:
+    get:
+      description: Health check for service
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.APIResponse'
+      summary: Health Check
+      tags:
+      - health
 securityDefinitions:
   BearerAuth:
     description: 'Using token header using the Bearer scheme. Example: "Bearer {token}"'

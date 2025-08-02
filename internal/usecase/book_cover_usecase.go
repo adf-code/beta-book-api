@@ -1,11 +1,11 @@
 package usecase
 
 import (
-	"beta-book-api/internal/entity"
-	"beta-book-api/internal/pkg/object_storage"
-	"beta-book-api/internal/repository"
 	"context"
 	"database/sql"
+	"github.com/adf-code/beta-book-api/internal/entity"
+	"github.com/adf-code/beta-book-api/internal/pkg/object_storage"
+	"github.com/adf-code/beta-book-api/internal/repository"
 	"github.com/rs/zerolog"
 	"mime/multipart"
 	"strings"

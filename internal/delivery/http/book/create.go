@@ -1,10 +1,10 @@
 package book
 
 import (
-	"beta-book-api/internal/delivery/response"
-	"beta-book-api/internal/entity"
 	"encoding/json"
 	"fmt"
+	"github.com/adf-code/beta-book-api/internal/delivery/response"
+	"github.com/adf-code/beta-book-api/internal/entity"
 	"net/http"
 )
 
@@ -21,7 +21,7 @@ import (
 // @Failure      401      {object}  response.APIResponse
 // @Failure      422      {object}  response.APIResponse
 // @Failure      500      {object}  response.APIResponse
-// @Router       /books [post]
+// @Router       /api/v1/books [post]
 func (h *BookHandler) Create(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info().Msg("📥 Incoming Create request")
 	var book entity.Book

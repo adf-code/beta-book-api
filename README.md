@@ -7,7 +7,7 @@ A clean and modular Golang project for managing books using Clean Architecture p
 ## 🗂 Project Structure
 
 ```
-beta-book-api/
+github.com/adf-code/beta-book-api/
 ├── cmd/
 │   ├── main.go                         # Application entry point
 │   └── migrate.go                      # CLI for running migrations

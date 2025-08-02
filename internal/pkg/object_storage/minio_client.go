@@ -1,9 +1,9 @@
 package object_storage
 
 import (
-	"beta-book-api/config"
 	"context"
 	"fmt"
+	"github.com/adf-code/beta-book-api/config"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/rs/zerolog"

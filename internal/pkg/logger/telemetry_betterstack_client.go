@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"beta-book-api/config"
 	"bytes"
+	"github.com/adf-code/beta-book-api/config"
 	"net/http"
 	"os"
 	"time"

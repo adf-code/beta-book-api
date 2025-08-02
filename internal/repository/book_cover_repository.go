@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"beta-book-api/internal/entity"
 	"context"
 	"database/sql"
+	"github.com/adf-code/beta-book-api/internal/entity"
 	"github.com/google/uuid"
 )
 

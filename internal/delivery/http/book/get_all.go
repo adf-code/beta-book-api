@@ -1,8 +1,8 @@
 package book
 
 import (
-	"beta-book-api/internal/delivery/request"
-	"beta-book-api/internal/delivery/response"
+	"github.com/adf-code/beta-book-api/internal/delivery/request"
+	"github.com/adf-code/beta-book-api/internal/delivery/response"
 	"net/http"
 )
 
@@ -36,7 +36,7 @@ import (
 //
 // @Success      200     {object}  response.APIResponse
 // @Failure      500     {object}  response.APIResponse
-// @Router       /books [get]
+// @Router       /api/v1/books [get]
 func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info().Msg("📥 Incoming GetAll request")
 	params := request.ParseBookQueryParams(r)

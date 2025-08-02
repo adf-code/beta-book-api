@@ -1,4 +1,4 @@
-module beta-book-api
+module github.com/adf-code/beta-book-api
 
 go 1.23.0
 

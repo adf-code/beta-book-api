@@ -1,12 +1,12 @@
 package usecase_test
 
 import (
-	"beta-book-api/internal/entity"
-	objectMocks "beta-book-api/internal/pkg/object_storage/mocks"
-	repoMocks "beta-book-api/internal/repository/mocks"
-	"beta-book-api/internal/usecase"
 	"context"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/adf-code/beta-book-api/internal/entity"
+	objectMocks "github.com/adf-code/beta-book-api/internal/pkg/object_storage/mocks"
+	repoMocks "github.com/adf-code/beta-book-api/internal/repository/mocks"
+	"github.com/adf-code/beta-book-api/internal/usecase"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"

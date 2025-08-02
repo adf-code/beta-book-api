@@ -15,7 +15,7 @@ COPY . .
 RUN swag init -g cmd/main.go -o ./docs
 
 # Build main binary
-RUN go build -o /bin/beta-book-api ./cmd/main.go
+RUN go build -o /bin/github.com/adf-code/beta-book-api ./cmd/main.go
 
 # Build migrate binary
 RUN go build -o /bin/migrate ./cmd/migrate.go
@@ -35,7 +35,7 @@ COPY .env.docker .env
 COPY migration ./migration
 
 # Copy built binaries
-COPY --from=builder /bin/beta-book-api .
+COPY --from=builder /bin/github.com/adf-code/beta-book-api .
 COPY --from=builder /bin/migrate .
 
 # Copy Swagger docs
@@ -48,4 +48,4 @@ RUN chmod +x /wait-for-it.sh
 EXPOSE 8080
 
 # Run: wait for postgres and minio, then migrate, then start API
-CMD sh -c "/wait-for-it.sh postgres:5432 -- /wait-for-it.sh minio:9000 -- ./migrate up && ./beta-book-api"
+CMD sh -c "/wait-for-it.sh postgres:5432 -- /wait-for-it.sh minio:9000 -- ./migrate up && ./github.com/adf-code/beta-book-api"

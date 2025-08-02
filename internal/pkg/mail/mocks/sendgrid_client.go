@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"beta-book-api/internal/entity"
+	"github.com/adf-code/beta-book-api/internal/entity"
 	"github.com/stretchr/testify/mock"
 )
 

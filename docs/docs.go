@@ -363,6 +363,23 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/healthz": {
+            "get": {
+                "description": "Health check for service",
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health Check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.APIResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

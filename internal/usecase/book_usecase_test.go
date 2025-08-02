@@ -1,13 +1,13 @@
 package usecase_test
 
 import (
-	"beta-book-api/internal/delivery/request"
-	"beta-book-api/internal/entity"
-	mailMocks "beta-book-api/internal/pkg/mail/mocks"
-	repoMocks "beta-book-api/internal/repository/mocks"
-	"beta-book-api/internal/usecase"
 	"context"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/adf-code/beta-book-api/internal/delivery/request"
+	"github.com/adf-code/beta-book-api/internal/entity"
+	mailMocks "github.com/adf-code/beta-book-api/internal/pkg/mail/mocks"
+	repoMocks "github.com/adf-code/beta-book-api/internal/repository/mocks"
+	"github.com/adf-code/beta-book-api/internal/usecase"
 	"github.com/rs/zerolog"
 	"testing"
 

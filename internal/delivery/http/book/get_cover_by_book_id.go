@@ -1,12 +1,12 @@
 package book
 
 import (
-	"beta-book-api/internal/delivery/http/router"
-	"beta-book-api/internal/delivery/response"
-	"beta-book-api/internal/entity"
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/adf-code/beta-book-api/internal/delivery/http/router"
+	"github.com/adf-code/beta-book-api/internal/delivery/response"
+	"github.com/adf-code/beta-book-api/internal/entity"
 	"github.com/google/uuid"
 	"net/http"
 )
@@ -22,7 +22,7 @@ import (
 // @Failure      401  {object}  response.APIResponse  "Unauthorized"
 // @Failure      404  {object}  response.APIResponse  "Book not found"
 // @Failure      500  {object}  response.APIResponse  "Internal server error"
-// @Router       /books/cover/{id} [get]
+// @Router       /api/v1/books/cover/{id} [get]
 func (h *BookHandler) GetCoverByBookID(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info().Msg("📥 Incoming GetByID request")
 	idStr := router.GetParam(r, "id")

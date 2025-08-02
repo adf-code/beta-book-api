@@ -1,12 +1,12 @@
 package usecase
 
 import (
-	"beta-book-api/internal/delivery/request"
-	"beta-book-api/internal/entity"
-	"beta-book-api/internal/pkg/mail"
-	"beta-book-api/internal/repository"
 	"context"
 	"database/sql"
+	"github.com/adf-code/beta-book-api/internal/delivery/request"
+	"github.com/adf-code/beta-book-api/internal/entity"
+	"github.com/adf-code/beta-book-api/internal/pkg/mail"
+	"github.com/adf-code/beta-book-api/internal/repository"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 )

@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"beta-book-api/internal/delivery/request"
-	"beta-book-api/internal/entity"
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/adf-code/beta-book-api/internal/delivery/request"
+	"github.com/adf-code/beta-book-api/internal/entity"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 )

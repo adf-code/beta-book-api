@@ -1,4 +1,4 @@
-APP_NAME=beta-book-api
+APP_NAME=github.com/adf-code/beta-book-api
 BUILD_DIR=bin
 CMD_ENTRY=cmd/main.go
 SWAG=swag

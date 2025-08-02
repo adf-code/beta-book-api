@@ -1,8 +1,8 @@
 package book
 
 import (
-	"beta-book-api/internal/delivery/http/router"
-	"beta-book-api/internal/delivery/response"
+	"github.com/adf-code/beta-book-api/internal/delivery/http/router"
+	"github.com/adf-code/beta-book-api/internal/delivery/response"
 	"github.com/google/uuid"
 	"net/http"
 )
@@ -18,7 +18,7 @@ import (
 // @Failure      401  {object}  response.APIResponse  "Unauthorized"
 // @Failure      404  {object}  response.APIResponse  "Book not found"
 // @Failure      500  {object}  response.APIResponse  "Internal server error"
-// @Router       /books/{id} [delete]
+// @Router       /api/v1/books/{id} [delete]
 func (h *BookHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info().Msg("📥 Incoming Delete request")
 	idStr := router.GetParam(r, "id")
